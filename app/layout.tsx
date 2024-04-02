@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import NavigationSideBar from "@/components/navigation/navigation-sidebar";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +18,26 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className='block'>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="Datacom AI Tool">
+          <div className="w-full bg-gray-100 border-b border-gray-800 flex justify-end px-5 py-2">
+            
+            <div className="w-10 h-10 rounded-full bg-blue-500 flex justify-center items-center text-white">
+              PB
+            </div>
+          </div>
+
+          <div >
+            <div className="hidden md:flex h-full w-64 flex-col fixed">
+              <NavigationSideBar />
+            </div>
+            <main className="md:pl-64 h-full">
+              {children}
+            </main>
+          </div>
+
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
