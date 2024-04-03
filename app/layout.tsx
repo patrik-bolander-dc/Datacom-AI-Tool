@@ -20,7 +20,7 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
           <NavigationTopbar />
 
           <div className="flex flex-col">
-            <div className="h-[calc(100vh-100px)] w-64 fixed"> {/*  TODO: remove Calc()*/}
+            <div className="h-[calc(100vh-100px)] w-64 fixed"> {/* TODO: remove Calc()*/}
               <NavigationSideBar />
             </div>
             <main className="pl-64 h-full ">

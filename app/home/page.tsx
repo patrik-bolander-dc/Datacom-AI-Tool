@@ -9,7 +9,9 @@ const Home = () => {
                     <li>NextJs</li>
                     <li>Typescript</li>
                     <li>Tailwind CSS</li>
+                    <li>Tailwind CSS Merge</li>
                     <li>Shadcn/ui CSS components</li>
+                    <li>Lucide-react icons</li>
                 </ul>
 
             </div>
