@@ -5,7 +5,7 @@ export default function SetupPage() {
   const profile = true;
 
   if (profile) {
-    return redirect(`/home`)
+    return redirect(`/home`);
   }
 
   return (

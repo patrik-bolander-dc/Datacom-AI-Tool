@@ -1,23 +1,28 @@
 "use client"
-import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { usePathname, useRouter } from "next/navigation";
 
 interface NavigationItemProps {
     title: string;
-    path?: string;
+    path: string;
+    icon: JSX.Element;
 }
 
-const NavigationItem = ({ title, path }: NavigationItemProps) => {
-
+const NavigationItem = ({ title, path, icon }: NavigationItemProps) => {
     const router = useRouter();
+    const pathname = usePathname();
 
     const onClick = () => {
         router.push(`${path}`);
     }
 
-
     return (
-        <button onClick={onClick} className="bg-white w-full py-2 font-semibold border-y border-gray-300 focus:bg-gray-500 focus:text-white">
-            {title}
+        <button onClick={onClick}
+            className={cn(' w-full py-2 my-1 pl-3  text-lg flex items-center gap-3 rounded font-normal text-black hover:text-dcBlue hover:bg-blue-100 dark:text-white dark:hover:text-black', 
+                pathname === path && 'bg-blue-100 text-dcBlue dark:text-black')}>
+            {/* <div className="flex items-center gap-2"> */}
+                {icon} {title}
+            {/* </div> */}
         </button>
     );
 }
