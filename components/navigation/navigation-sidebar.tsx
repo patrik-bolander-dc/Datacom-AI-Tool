@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ModeToggle } from "@/components/mode-toggle";
 import NavigationItem from "./navigation-sidebar-item";

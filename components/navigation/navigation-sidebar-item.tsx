@@ -18,11 +18,9 @@ const NavigationItem = ({ title, path, icon }: NavigationItemProps) => {
 
     return (
         <button onClick={onClick}
-            className={cn(' w-full py-2 my-1 pl-3  text-lg flex items-center gap-3 rounded font-normal text-black hover:text-dcBlue hover:bg-blue-100 dark:text-white dark:hover:text-black', 
+            className={cn(' w-full py-2 my-1 pl-3  text-lg flex items-center gap-3 rounded font-normal text-black hover:text-dcBlue hover:bg-blue-100 dark:text-white dark:hover:text-black',
                 pathname === path && 'bg-blue-100 text-dcBlue dark:text-black')}>
-            {/* <div className="flex items-center gap-2"> */}
-                {icon} {title}
-            {/* </div> */}
+            {icon} {title}
         </button>
     );
 }
