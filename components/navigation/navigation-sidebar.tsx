@@ -3,7 +3,8 @@ import { ModeToggle } from "@/components/mode-toggle";
 import NavigationItem from "./navigation-sidebar-item";
 import { NaviationItemArray } from "@/lib/data";
 
-const NavigationSideBar = async () => {
+const NavigationSideBar = ({setOpen}: {setOpen?: any}) => { 
+    // passing setOpen function to NavigationItem
 
     return (
         <div className="flex flex-col h-full text-primary w-full bg-white dark:bg-slate-700  px-3 drop-shadow-xl rounded-r-2xl">
@@ -11,7 +12,7 @@ const NavigationSideBar = async () => {
             <ScrollArea className="flex-1 w-full">
                 {NaviationItemArray.map((item, id) => (
                     <div key={id}>
-                        <NavigationItem title={item.title} path={item.path} icon={item.icon} />
+                        <NavigationItem title={item.title} path={item.path} icon={item.icon} setOpen={setOpen}/>
                     </div>
                 ))}
 

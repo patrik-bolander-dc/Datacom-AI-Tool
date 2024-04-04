@@ -14,22 +14,24 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
 
   return (
     <html lang="en">
-      <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="Datacom AI Tool">
-        <body className='block bg-slate-50 dark:bg-slate-800'>
+      <body>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="Datacom AI Tool">
+          <body className='block bg-slate-50 dark:bg-slate-800'>
 
-          <NavigationTopbar />
+            <NavigationTopbar />
 
-          <div className="flex flex-col">
-            <div className="h-[calc(100vh-100px)] w-64 fixed"> {/* TODO: remove Calc()*/}
-              <NavigationSideBar />
+            <div className="flex flex-col">
+              <div className="hidden md:block  h-[calc(100vh-100px)] w-64 fixed"> {/* TODO: remove Calc()*/}
+                <NavigationSideBar />
+              </div>
+              <main className="md:pl-64 h-full ">
+                {children}
+              </main>
             </div>
-            <main className="pl-64 h-full ">
-              {children}
-            </main>
-          </div>
 
-        </body>
-      </ThemeProvider>
+          </body>
+        </ThemeProvider>
+      </body>
     </html >
   );
 }

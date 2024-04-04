@@ -1,9 +1,11 @@
 import React from 'react'
 import Image from 'next/image'
+import MobileToggle from '../mobile-toggle'
 
 function NavigationTopbar() {
     return (
         <div className="w-full bg-white dark:bg-slate-700 border-b border-gray-200 flex justify-between px-5 py-2 items-center ">
+            <MobileToggle />
             <Image
                 src="/images/DatacomCompanyLogo.png" 
                 height={50} 

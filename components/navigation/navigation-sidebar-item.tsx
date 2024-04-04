@@ -6,14 +6,21 @@ interface NavigationItemProps {
     title: string;
     path: string;
     icon: JSX.Element;
+    setOpen?: any;
 }
 
-const NavigationItem = ({ title, path, icon }: NavigationItemProps) => {
+const NavigationItem = ({ title, path, icon, setOpen }: NavigationItemProps) => {
+    // setOpen - used for closing the <Sheet>
+
     const router = useRouter();
     const pathname = usePathname();
 
     const onClick = () => {
         router.push(`${path}`);
+
+        if (setOpen) { // setOpen is null when in desktop mode
+            setOpen(false)
+        }
     }
 
     return (
