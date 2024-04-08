@@ -1,7 +1,9 @@
 import FileUploader from '@/components/file-upload/file-upload-component';
+import SingleFileUploader from '@/components/file-upload/single-file-upload';
 import React from 'react'
 
-const url = "/api/upload";
+// const url = "/api/upload";
+const url = 'https://rekognition-backend.azurewebsites.net/analyze'
 
 interface ContainerProps {
   children: React.ReactNode
@@ -17,7 +19,7 @@ function Tool2() {
   return (
     <div className='w-full flex justify-center'>
 
-      <Container>
+      {/* <Container>
         <h1 className="text-2xl font-bold">File Uploader</h1>
         <FileUploader
           url={url}
@@ -25,11 +27,12 @@ function Tool2() {
             "image/png",
             "image/jpeg",
           ]}
-          maxFileSize={100}
-          label="Max File Size: 1MB"
+          maxFileSize={100} // in MB
+          label="Max File Size: 1GB" 
           labelAlt="Accepted File Types: png, jpeg"
         />
-      </Container>
+      </Container> */}
+      <SingleFileUploader />
     </div>
   )
 }

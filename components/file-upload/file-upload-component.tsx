@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, ChangeEvent, useRef } from 'react';
-import { Bot, Check, Hash, Home, Users } from "lucide-react";
+import { Bot, Check, Hash, Home, Users, X } from "lucide-react";
 
 interface FileUploaderProps {
     acceptedFileTypes?: string[] | null;
@@ -75,10 +75,11 @@ export default function FileUploader(props: FileUploaderProps) {
 
     const fileUploadHandler = (file: File) => {
         const formData = new FormData();
-        formData.append("uploads", file);
+        formData.append("image", file);
 
         const xhr = new XMLHttpRequest();
         xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "multipart/form-data");
 
         xhr.upload.addEventListener("progress", event => {
             if (event.lengthComputable) {
@@ -90,6 +91,7 @@ export default function FileUploader(props: FileUploaderProps) {
         xhr.addEventListener("readystatechange", () => {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
+                    console.log("yay");
                     setFileStatus(prev => ({ ...prev, [file.name]: 'Uploaded' }));
                     setUploadSuccess(true);
                 } else {
@@ -156,7 +158,7 @@ export default function FileUploader(props: FileUploaderProps) {
                                             ?
                                             <Check className="text-xl text-green-500 mr-4" />
                                             :
-                                            <Hash className="text-xl text-red-500 mr-4" />
+                                            <X className="text-xl text-red-500 mr-4" />
                                     }
                                 </>
                             }

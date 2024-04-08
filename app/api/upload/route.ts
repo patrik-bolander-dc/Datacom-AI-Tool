@@ -1,9 +1,12 @@
 export async function POST(request: Request) {
-    if (Math.random() < 0.2) {
+
+    const ifError = false
+    if (ifError) {
         return new Response("Failed to process file", { status: 500 });
-    } else {
-        return new Response("File Uploaded", { status: 200 });
-    }
+    } 
+    
+    return new Response("File Uploaded", { status: 200 });
+    
 }
 
 export async function GET(request: Request) {
