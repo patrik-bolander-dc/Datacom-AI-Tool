@@ -20,44 +20,39 @@ const SingleFileUploader = () => {
 
   const handleUpload = async () => {
     if (file) {
-       console.log("Uploading file...");
-       console.log(file)
-
+      console.log("Uploading file...");
+      console.log(file)
+  
       const formData = new FormData();
-      formData.append("image", file); // file.name
-
+      formData.append("image", file);
+  
       const url = 'https://rekognition-backend.azurewebsites.net/analyze'
-
-      // Display the values
+  
       for (const value of formData.entries()) {
         console.log('item:', value);
       }
-
+  
       try {
         const result = await fetch(url, {
           method: "POST",
-          body: formData,
-          mode: 'no-cors',
-          headers: new Headers({
-            "Content-Type": "multipart/form-data",
-            // 'accept': 'image/*',
-          })
+          body: formData
         });
+  
+        if (result.ok) {
+          const imageBlob = await result.blob();
 
-        // const data = await result;
-        console.log(result);
-        // const imageObjectURL = URL.createObjectURL(data);
-        // setImg(imageObjectURL);
-
-
-        // console.log(data);
+          const imageObjectURL = URL.createObjectURL(imageBlob);
+          setImg(imageObjectURL);
+        } else {
+          console.error('Upload failed:', await result.text());
+        }
       } catch (error) {
         console.log('here in error')
         console.error(error);
       }
     }
   };
-
+  
   return (
     <>
       <div>
