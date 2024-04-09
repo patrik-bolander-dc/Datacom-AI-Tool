@@ -10,6 +10,7 @@ const Home = () => {
                     <li>Typescript</li>
                     <li>Tailwind CSS</li>
                     <li>Tailwind CSS Merge</li>
+                    <li>Tailwind CSS animation</li>
                     <li>Shadcn/ui CSS components</li>
                     <li>Lucide-react icons</li>
                 </ul>
