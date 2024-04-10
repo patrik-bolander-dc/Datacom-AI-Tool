@@ -101,7 +101,7 @@ const SingleFileUploader = () => {
               <ul>
                 <li><span className="font-semibold pr-1">Name:</span> {file.name}</li>
                 <li><span className="font-semibold pr-1">Type:</span> {file.type}</li>
-                <li><span className="font-semibold pr-1">Size:</span> {formatBytes(file.size)} MG</li>
+                <li><span className="font-semibold pr-1">Size:</span> {formatBytes(file.size)} MB</li>
               </ul>
             </div>
             <div className="rounded-xl">
