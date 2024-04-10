@@ -3,16 +3,15 @@ import { useState } from "react";
 import Image from 'next/image'
 import { LoaderCircle } from 'lucide-react';
 
-interface SingleFileUploaderProps {
-  label: string
-  labelAlt: string
-}
 
-const SingleFileUploader = ({ label, labelAlt }: SingleFileUploaderProps) => {
+const SingleFileUploader = () => {
   const [file, setFile] = useState<File | null>(null);
   const [imgResult, setImgResult] = useState('');
   const [uploadError, setUploadError] = useState<string | null | unknown>(null);
   const [isUploading, setIsUploading] = useState(false);
+
+  const labelMaxFileSize = "no limit";
+  const labelAcceptedFileType = "png, jpeg";
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -76,9 +75,9 @@ const SingleFileUploader = ({ label, labelAlt }: SingleFileUploaderProps) => {
     <div className="w-3/4 md:w-full  flex flex-col items-center ">
 
       <div className=" w-full md:w-1/2 flex flex-col bg-gray-200 p-3 rounded-xl max-w-2xl min-w-20 dark:bg-gray-900">
-        <label className="flex justify-end text-black dark:text-blue-200/90">
-          {/* <span>{label}</span>  // optional: display max file size to user*/}
-          <span>{labelAlt}</span>
+        <label className="flex justify-start text-black dark:text-blue-200/90">
+          <span>Accepted File Types: {labelAcceptedFileType}</span>
+          {/* <span>{labelMaxFileSize}</span> // optional: display max file size*/}
         </label>
         <input type="file"
           onChange={handleFileChange}
@@ -122,7 +121,7 @@ const SingleFileUploader = ({ label, labelAlt }: SingleFileUploaderProps) => {
           <button className='bg-white dark:bg-gray-200 text-black font-semibold rounded-lg py-1 mt-5' onClick={imgResult ? resetImageUpload : handleUpload}>
             {imgResult && !isUploading && (<p>Upload another file</p>)}
             {!imgResult && !isUploading && (<p>Upload file</p>)}
-            {isUploading && <p className="flex justify-center"><LoaderCircle className="animate-spin"/></p>}
+            {isUploading && <p className="flex justify-center"><LoaderCircle className="animate-spin" /></p>}
           </button>
         )}
 
@@ -133,9 +132,9 @@ const SingleFileUploader = ({ label, labelAlt }: SingleFileUploaderProps) => {
           </div>
         )}
       </div>
-      
+
       {/* Image result */}
-      <section className="w-full mt-5 max-w-2xl ">
+      <section className="w-full mt-5 max-w-2xl">
         {imgResult !== '' && (
           <div>
             <h1>Result:</h1>
