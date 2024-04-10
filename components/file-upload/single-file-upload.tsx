@@ -76,16 +76,15 @@ const SingleFileUploader = ({ label, labelAlt }: SingleFileUploaderProps) => {
     <div className="w-3/4 md:w-full  flex flex-col items-center ">
 
       <div className=" w-full md:w-1/2 flex flex-col bg-gray-200 p-3 rounded-xl max-w-2xl min-w-20 dark:bg-gray-900">
-        <label className="flex justify-between text-black dark:text-blue-200/90">
-          <span>{label}</span>
+        <label className="flex justify-end text-black dark:text-blue-200/90">
+          {/* <span>{label}</span>  // optional: display max file size to user*/}
           <span>{labelAlt}</span>
         </label>
         <input type="file"
           onChange={handleFileChange}
           className='bg-zinc-100 dark:bg-dcBlue rounded-xl border border-blue-500 text-lg 
           dark:file:bg-blue-500 dark:file:text-black file:border-0 file:p-3 file:px-4 file:rounded-l  file:font-semibold file:text-lg file:mr-5 file:hover:cursor-pointer
-          file:bg-white file:text-black
-          '
+          file:bg-white file:text-black'
         />
 
         {/* File Upload error */}
@@ -111,8 +110,8 @@ const SingleFileUploader = ({ label, labelAlt }: SingleFileUploaderProps) => {
                 src={URL.createObjectURL(file)}
                 width={150}
                 height={150}
-                alt="Picture of the author"
-                className="rounded-xl"
+                alt="Thumbnail image"
+                className="rounded-lg"
               />
             </div>
           </section>
@@ -133,7 +132,6 @@ const SingleFileUploader = ({ label, labelAlt }: SingleFileUploaderProps) => {
             <p className="">{uploadError as string}</p>
           </div>
         )}
-
       </div>
       
       {/* Image result */}
