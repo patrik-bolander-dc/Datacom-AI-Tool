@@ -5,6 +5,7 @@ function damageAnalyser() {
   return (
     <div className='w-full mt-5'>
       <SingleFileUploader />
+
     </div>
   )
 }

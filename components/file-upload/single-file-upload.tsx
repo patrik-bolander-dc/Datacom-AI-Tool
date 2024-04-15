@@ -1,26 +1,22 @@
 "use client"
 import { useEffect, useState } from "react";
 import Image from 'next/image'
-import { Circle, LoaderCircle } from 'lucide-react';
-import { MOCK_carDamageData } from "@/lib/data";
-import { cn } from "@/lib/utils";
-
+import { Circle, CircleCheck, LoaderCircle } from 'lucide-react';
+import { MOCK_carDamageData, carPartColorMap as ImportedCarPartColorMap, CarPartLocation, carPart, carPartType } from "@/lib/data";
+import { cn, formatBytes, haveCommonItems } from "@/lib/utils";
+import CarPartTick from "./car-part-tick";
 
 const SingleFileUploader = () => {
   const [file, setFile] = useState<File | null>(null);
   const [imgResult, setImgResult] = useState('');
   const [uploadError, setUploadError] = useState<string | null | unknown>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [carPartArray, setCarPartArray] = useState<carPartType[]>([])
 
   const labelMaxFileSize = "no limit";
   const labelAcceptedFileType = "png, jpeg";
 
-  const carPartColorMap = {
-    FENDER_LEFT: 'bg-red-500',
-    FENDER_RIGHT: 'bg-blue-500',
-    GRILL: 'bg-purple-500',
-    FRONT_LAMP_RIGHT: 'bg-green-500',
-  } as any;
+  const carPartColorMap = ImportedCarPartColorMap;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -42,10 +38,15 @@ const SingleFileUploader = () => {
       const url = 'https://rekognition-backend.azurewebsites.net/analyze'
 
       try {
-        const result = await fetch(url, {
-          method: "POST",
-          body: formData
-        });
+        // const result = await fetch(url, {
+        //   method: "POST",
+        //   body: formData
+        // });
+
+        // Disabling the fetch call for dev work
+        const myBlob = new Blob();
+        const myOptions = { status: 200, statusText: "its all good!" };
+        const result = new Response(myBlob, myOptions);
 
         if (!result.ok) {
           console.error('Upload failed:', await result.text());
@@ -76,21 +77,23 @@ const SingleFileUploader = () => {
     setUploadError(null);
   }
 
-  function formatBytes(bytes: number) {
-    return (bytes / Math.pow(1024, 2)).toFixed(3);
-  }
-
-  
   useEffect(() => {
     carPartColorMap
-    console.log(carPartColorMap);
+    console.log(carPartColorMap)
+    let carPartArray: carPartType[] = [];
+    // collect all affected car parts from MOCK data
+    MOCK_carDamageData.PartsDamaged.map((i) => {
+      carPartArray.push(i.damagedCarPart as any)
+    })
+    setCarPartArray(carPartArray);
   }, [imgResult])
-  
+
 
   return (
-    <div className="w-full flex justify-center">
+    <div className="w-full flex justify-center bg-purple-200">
 
-      <div className="w-full md:w-1/2 flex flex-col bg-gray-200 p-5 rounded-xl max-w-2xl min-w-20 dark:bg-gray-900">
+      {/* Card */}
+      <div className="w-full md:w-1/2 flex flex-col bg-gray-200 p-5 rounded-xl max-w-2xl min-w-20 dark:bg-gray-900 h-full">
         <label className="flex justify-start text-black dark:text-blue-200/90">
           <span>Accepted File Types: {labelAcceptedFileType}</span>
           {/* <span>{labelMaxFileSize}</span> // optional: display max file size*/}
@@ -155,16 +158,16 @@ const SingleFileUploader = () => {
               <h1>Photo Analysis</h1>
               <img src={imgResult} alt="result image" />
 
-              <div className="text-lg">
-                <div className="flex justify-between py-2">
+              <div className="text-xs">
+                <div className="flex justify-evenly py-2">
                   <div className="flex justify-center text-center w-1/3">Year: {MOCK_carDamageData.year}</div>
                   <span>|</span>
                   <div className="flex justify-center text-center w-1/3">Make: {MOCK_carDamageData.make}</div>
                   <span>|</span>
                   <div className="flex justify-center text-center w-1/3">Model: {MOCK_carDamageData.model}</div>
                 </div>
-
-                <ul className="">
+                {/* Individual damaged parts */}
+                <ul className="text-xs">
                   {MOCK_carDamageData.PartsDamaged.map((item, index) => (
                     <li key={index} className='py-2 space-x-2 '>
                       <span className={`rounded py-0.5 px-4 text-white ${carPartColorMap[item.damagedCarPart]}`}> {item.Percentage}% </span>
@@ -175,28 +178,24 @@ const SingleFileUploader = () => {
               </div>
             </div>
           )}
-
-
-
         </section>
       </div>
 
       {/* Car diagram */}
-      <section className="w-full max-w-2xl h-screen">
-        {imgResult !== '' && (
-          <div className="relative w-full h-full">
-            <Image src="/images/carDiagram.jpg" alt="Car Diagram image" width={500} height={1000}
-              className="w-full absolute top-0 left-0 object-cover h-screen" />
+      {imgResult !== '' && (
+        <section className="w-fit h-full flex relative ">
+          <img src="/images/carDiagram.jpg" alt="Car Diagram image"
+            className="h-[500px] aspect-auto " />
 
-            {/* <div className="bg-green-200 opacity-30 absolute w-full h-screen grid grid-cols-3 grid-rows-3 justify-between">
-              {[...Array(9)].map((e, i) => (
-                <p className='w-full flex justify-center items-center text-2xl font-extrabold h-full text-red-500'>O</p>
-              ))}              
-            </div> */}
+          <div className="absolute w-full h-full grid grid-cols-3 gap-x-6 justify-between">
+            {Object.values(CarPartLocation).map((e: any, i: any) => (
+              <div key={i}>
+                <CarPartTick isTicked={haveCommonItems(e, carPartArray)} />
+              </div>
+            ))}
           </div>
-        )}
-      </section>
-
+        </section>
+      )}
 
     </div>
   );

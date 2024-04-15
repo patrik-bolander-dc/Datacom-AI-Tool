@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
 
   return (
-    <html lang="en">
+    <html lang="en" >
       <body>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="Datacom AI Tool">
           <body className='block bg-slate-50 dark:bg-slate-800'>
