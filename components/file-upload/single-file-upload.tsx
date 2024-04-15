@@ -1,9 +1,9 @@
 "use client"
 import { useEffect, useState } from "react";
 import Image from 'next/image'
-import { Circle, CircleCheck, LoaderCircle } from 'lucide-react';
-import { MOCK_carDamageData, carPartColorMap as ImportedCarPartColorMap, CarPartLocation, carPart, carPartType } from "@/lib/data";
-import { cn, formatBytes, haveCommonItems } from "@/lib/utils";
+import { LoaderCircle } from 'lucide-react';
+import { MOCK_carDamageData, carPartColorMap as ImportedCarPartColorMap, CarPartLocation, carPartType } from "@/lib/data";
+import { formatBytes, haveCommonItems } from "@/lib/utils";
 import CarPartTick from "./car-part-tick";
 
 const SingleFileUploader = () => {
@@ -38,15 +38,15 @@ const SingleFileUploader = () => {
       const url = 'https://rekognition-backend.azurewebsites.net/analyze'
 
       try {
-        // const result = await fetch(url, {
-        //   method: "POST",
-        //   body: formData
-        // });
+        const result = await fetch(url, {
+          method: "POST",
+          body: formData
+        });
 
         // Disabling the fetch call for dev work
-        const myBlob = new Blob();
-        const myOptions = { status: 200, statusText: "its all good!" };
-        const result = new Response(myBlob, myOptions);
+        // const myBlob = new Blob();
+        // const myOptions = { status: 200, statusText: "its all good!" };
+        // const result = new Response(myBlob, myOptions);
 
         if (!result.ok) {
           console.error('Upload failed:', await result.text());
