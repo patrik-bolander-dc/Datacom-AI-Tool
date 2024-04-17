@@ -1,22 +1,26 @@
 "use client"
 import { useEffect, useState } from "react";
 import Image from 'next/image'
-import { Circle, CircleCheck, LoaderCircle } from 'lucide-react';
-import { MOCK_carDamageData, carPartColorMap as ImportedCarPartColorMap, CarPartLocation, carPart, carPartType } from "@/lib/data";
-import { cn, formatBytes, haveCommonItems } from "@/lib/utils";
+import { LoaderCircle } from 'lucide-react';
+import { MOCK_carDamageData, CarPartLocation } from "@/lib/data";
+import { formatBytes, haveCommonItems } from "@/lib/utils";
+import { Input } from "@/components/ui/input";
+import { carPartType } from "@/types";
 import CarPartTick from "./car-part-tick";
+import ListOfCarParts from "./list-of-parts";
 
 const SingleFileUploader = () => {
   const [file, setFile] = useState<File | null>(null);
   const [imgResult, setImgResult] = useState('');
   const [uploadError, setUploadError] = useState<string | null | unknown>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const [carPartArray, setCarPartArray] = useState<carPartType[]>([])
+  const [carPartArray, setCarPartArray] = useState<carPartType[]>([]);
+  const [regoInput, setRegoInput] = useState('');
 
-  const labelMaxFileSize = "no limit";
   const labelAcceptedFileType = "png, jpeg";
+  const regoInputMaxLength = 6;
 
-  const carPartColorMap = ImportedCarPartColorMap;
+
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -29,36 +33,44 @@ const SingleFileUploader = () => {
     }
   };
 
-  const handleUpload = async () => {
+  const handleFileUpload = async () => {
+
+    if (regoInput === '') {
+      setUploadError('Missing Rego number');
+      return
+    } else {
+      setUploadError(null)
+    }
+
     setIsUploading(true)
     if (file) {
       const formData = new FormData();
       formData.append("image", file);
 
-      const url = 'https://rekognition-backend.azurewebsites.net/analyze'
+      const url = 'https://rekognition-backend.azurewebsites.net/analyze';
 
       try {
-        // const result = await fetch(url, {
-        //   method: "POST",
-        //   body: formData
-        // });
+        const result = await fetch(url, {
+          method: "POST",
+          body: formData
+        });
 
-        // Disabling the fetch call for dev work
-        const myBlob = new Blob();
-        const myOptions = { status: 200, statusText: "its all good!" };
-        const result = new Response(myBlob, myOptions);
+        // DEV ONLY - Temporarily disabling the fetch call for dev work
+        // const myBlob = new Blob();
+        // const myOptions = { status: 200, statusText: "its all good!" };
+        // const result = new Response(myBlob, myOptions);
 
         if (!result.ok) {
           console.error('Upload failed:', await result.text());
           setUploadError(await result.text());
-          setIsUploading(false)
+          setIsUploading(false);
           return
         }
 
         if (result.ok) {
           const imageBlob = await result.blob();
-
           const imageObjectURL = URL.createObjectURL(imageBlob);
+
           setImgResult(imageObjectURL);
           setIsUploading(false);
         }
@@ -77,33 +89,72 @@ const SingleFileUploader = () => {
     setUploadError(null);
   }
 
+  const handleRegoInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRegoInput(e.target.value);
+  }
+
+  const submitRego = async () => {
+    const submitRegoUrl = '';
+    try {
+      const result = await fetch(submitRegoUrl, {
+        method: "POST",
+        body: JSON.stringify({})
+      });
+
+      if (!result.ok) {
+        console.error('Rego Upload failed:', await result.text());
+        setUploadError(await result.text());
+        setIsUploading(false);
+        return
+      }
+
+      if (result.ok) {
+        const imageBlob = await result.blob();
+        const imageObjectURL = URL.createObjectURL(imageBlob);
+
+        setImgResult(imageObjectURL);
+        setIsUploading(false);
+      }
+    } catch (error) {
+      // TODO
+    }
+  }
+
   useEffect(() => {
-    carPartColorMap
-    console.log(carPartColorMap)
     let carPartArray: carPartType[] = [];
+
     // collect all affected car parts from MOCK data
-    MOCK_carDamageData.PartsDamaged.map((i) => {
-      carPartArray.push(i.damagedCarPart as any)
+    MOCK_carDamageData.damagedParts.map((i) => {
+      carPartArray.push(i.Name as any)
     })
     setCarPartArray(carPartArray);
   }, [imgResult])
 
 
   return (
-    <div className="w-full flex justify-center bg-purple-200">
-
+    <div className="w-full flex flex-col justify-normal items-center 
+                      md:flex-row md:justify-center md:items-start">
       {/* Card */}
       <div className="w-full md:w-1/2 flex flex-col bg-gray-200 p-5 rounded-xl max-w-2xl min-w-20 dark:bg-gray-900 h-full">
         <label className="flex justify-start text-black dark:text-blue-200/90">
           <span>Accepted File Types: {labelAcceptedFileType}</span>
-          {/* <span>{labelMaxFileSize}</span> // optional: display max file size*/}
         </label>
-        <input type="file"
-          onChange={handleFileChange}
-          className='bg-zinc-100 dark:bg-dcBlue rounded-xl border border-blue-500 text-lg 
-          dark:file:bg-blue-500 dark:file:text-black file:border-0 file:p-3 file:px-4 file:rounded-l  file:font-semibold file:text-lg file:mr-5 file:hover:cursor-pointer
-          file:bg-white file:text-black'
-        />
+        <div className="flex w-full justify-between gap-4 md:block">
+          <input type="file"
+            onChange={handleFileChange}
+            className='bg-blue-50 dark:bg-dcBlue rounded-xl border border-blue-500 text-lg h-full
+          dark:file:bg-blue-500 dark:file:text-black file:border-0 file:p-3 file:px-4 file:rounded-l file:h-full file:font-semibold file:text-lg file:mr-5 file:hover:cursor-pointer
+          file:bg-white file:text-black w-full'
+          />
+          <button onClick={() => { }} className="p-2 bg-gray-400 rounded-lg md:hidden">Take a pic</button>
+        </div>
+
+        {!imgResult && (
+          <div className="mt-3 gap-3 flex items-center">
+            <p className="whitespace-nowrap">Rego Number:</p>
+            <Input type="text" className="rounded flex-grow text-black bg-white dark:bg-gray-100" onChange={handleRegoInput} maxLength={regoInputMaxLength} />
+          </div>
+        )}
 
         {/* File Upload error */}
         {uploadError && (
@@ -137,7 +188,7 @@ const SingleFileUploader = () => {
 
         {/* File upload button */}
         {file && (
-          <button className='bg-white dark:bg-gray-200 text-black font-semibold rounded-lg py-1 mt-5' onClick={imgResult ? resetImageUpload : handleUpload}>
+          <button className='bg-white dark:bg-gray-200 text-black font-semibold rounded-lg py-1 mt-5' onClick={imgResult ? resetImageUpload : handleFileUpload}>
             {imgResult && !isUploading && (<p>Upload another file</p>)}
             {!imgResult && !isUploading && (<p>Upload file</p>)}
             {isUploading && <p className="flex justify-center"><LoaderCircle className="animate-spin" /></p>}
@@ -147,7 +198,6 @@ const SingleFileUploader = () => {
         {uploadError !== null && (
           <div className="w-full text-red-500 font-semibold ">
             <p className="">An error has occurred</p>
-            <p className="">{uploadError as string}</p>
           </div>
         )}
 
@@ -159,22 +209,19 @@ const SingleFileUploader = () => {
               <img src={imgResult} alt="result image" />
 
               <div className="text-xs">
-                <div className="flex justify-evenly py-2">
-                  <div className="flex justify-center text-center w-1/3">Year: {MOCK_carDamageData.year}</div>
-                  <span>|</span>
-                  <div className="flex justify-center text-center w-1/3">Make: {MOCK_carDamageData.make}</div>
-                  <span>|</span>
-                  <div className="flex justify-center text-center w-1/3">Model: {MOCK_carDamageData.model}</div>
+
+                <div className="flex w-full justify-center my-3">
+                  <div className="grid grid-flow-col grid-rows-3 grid-cols-2 text-sm gap-x-7 gap-y-2">
+                    <p>Year: {MOCK_carDamageData.car_info.Year}</p>
+                    <p>Make: {MOCK_carDamageData.car_info.Make}</p>
+                    <p>Model: {MOCK_carDamageData.car_info.Model}</p>
+                    <p>Color: {MOCK_carDamageData.car_info.Colour}</p>
+                    <p>Plate: {MOCK_carDamageData.car_info.Plate}</p>
+                    <p>Fuel Type: {MOCK_carDamageData.car_info["Fuel Type"]}</p>
+                  </div>
                 </div>
                 {/* Individual damaged parts */}
-                <ul className="text-xs">
-                  {MOCK_carDamageData.PartsDamaged.map((item, index) => (
-                    <li key={index} className='py-2 space-x-2 '>
-                      <span className={`rounded py-0.5 px-4 text-white ${carPartColorMap[item.damagedCarPart]}`}> {item.Percentage}% </span>
-                      <span>{item.damagedCarPart}</span>
-                    </li>
-                  ))}
-                </ul>
+                <ListOfCarParts />
               </div>
             </div>
           )}

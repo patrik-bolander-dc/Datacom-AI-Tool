@@ -1,7 +1,8 @@
+"use client"
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ModeToggle } from "@/components/mode-toggle";
 import NavigationItem from "./navigation-sidebar-item";
-import { NaviationItemArray } from "@/lib/data";
+import { NaviationItemArray } from "@/lib/navigation-items";
 
 const NavigationSideBar = ({setOpen}: {setOpen?: any}) => { 
     // passing setOpen function to NavigationItem

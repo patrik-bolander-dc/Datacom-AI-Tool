@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
-import { carPartType } from "./data";
+import { carPartType } from "@/types";
+
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -14,4 +15,8 @@ export function haveCommonItems(arr1: carPartType[], arr2: carPartType[]) {
 
 export function formatBytes(bytes: number) {
   return (bytes / Math.pow(1024, 2)).toFixed(3);
+}
+
+export function roundDp(number: number){
+  return +number.toFixed(1);
 }

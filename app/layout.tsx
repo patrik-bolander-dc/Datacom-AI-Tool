@@ -14,9 +14,8 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
 
   return (
     <html lang="en" >
-      <body>
+      <body className='block bg-slate-50 dark:bg-slate-800'>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="Datacom AI Tool">
-          <body className='block bg-slate-50 dark:bg-slate-800'>
 
             <NavigationTopbar />
 
@@ -29,7 +28,7 @@ export default function RootLayout({ children, }: Readonly<{ children: React.Rea
               </main>
             </div>
 
-          </body>
+          
         </ThemeProvider>
       </body>
     </html >
