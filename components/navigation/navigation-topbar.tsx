@@ -1,11 +1,11 @@
 import React from 'react';
 import Image from 'next/image';
 import MobileToggle from '../mobile-toggle';
-import DatacomCompanyLogo from '@/public/images/DatacomCompanyLogo.png';
+import DatacomCompanyLogo from '@/public/Images/DatacomCompanyLogo.png';
 
 function NavigationTopbar() {
     return (
-        <div className="w-full bg-white dark:bg-slate-700 border-b border-gray-200 flex justify-between px-5 py-2 items-center ">
+        <div className="w-full bg-white dark:bg-slate-700 border-b border-gray-200 flex justify-between px-5 py-2 items-center">
             <MobileToggle />
             <Image
                 src={DatacomCompanyLogo}

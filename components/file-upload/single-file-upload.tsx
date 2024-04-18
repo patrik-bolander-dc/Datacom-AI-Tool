@@ -209,7 +209,7 @@ const SingleFileUploader = () => {
           {imgResult !== '' && (
             <div>
               <h1>Photo Analysis</h1>
-              <Image src={imgResult} alt="result image" width={100} height={100}/>
+              <Image src={imgResult} alt="result image" width={600} height={600}/>
 
               <div className="text-xs">
 
