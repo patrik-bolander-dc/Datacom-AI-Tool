@@ -126,10 +126,10 @@ const SingleFileUploader = () => {
 
     // collect all affected car parts from MOCK data
     MOCK_carDamageData.damagedParts.map((i) => {
-      carPartArray.push(i.Name as any)
+      carPartArray.push(i.Name as any);
     })
     setCarPartArray(carPartArray);
-  }, [imgResult])
+  }, [imgResult]);
 
 
   return (
@@ -157,7 +157,7 @@ const SingleFileUploader = () => {
           </div>
         )}
 
-        {/* File Upload error */}
+        {/* File Upload Error */}
         {uploadError && (
           <label className="py-2">
             <span className=" text-red-500">{uploadError as string}</span>
