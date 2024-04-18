@@ -6,6 +6,7 @@ import { MOCK_carDamageData, CarPartLocation } from "@/lib/data";
 import { formatBytes, haveCommonItems } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { carPartType } from "@/types";
+
 import CarPartTick from "./car-part-tick";
 import ListOfCarParts from "./list-of-parts";
 
