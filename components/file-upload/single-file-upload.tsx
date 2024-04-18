@@ -10,6 +10,8 @@ import { carPartType } from "@/types";
 import CarPartTick from "./car-part-tick";
 import ListOfCarParts from "./list-of-parts";
 
+import CarDiagram from '@/public/Images/carDiagram.jpg';
+
 const SingleFileUploader = () => {
   const [file, setFile] = useState<File | null>(null);
   const [imgResult, setImgResult] = useState('');
@@ -207,7 +209,7 @@ const SingleFileUploader = () => {
           {imgResult !== '' && (
             <div>
               <h1>Photo Analysis</h1>
-              <img src={imgResult} alt="result image" />
+              <Image src={imgResult} alt="result image" width={100} height={100}/>
 
               <div className="text-xs">
 
@@ -232,8 +234,8 @@ const SingleFileUploader = () => {
       {/* Car diagram */}
       {imgResult !== '' && (
         <section className="w-fit h-full flex relative ">
-          <img src="/images/carDiagram.jpg" alt="Car Diagram image"
-            className="h-[500px] aspect-auto " />
+          <Image src={CarDiagram} alt="Car Diagram image" width={250} height={1000}
+            className="h-[500px] min-w-fit aspect-auto " />
 
           <div className="absolute w-full h-full grid grid-cols-3 gap-x-6 justify-between">
             {Object.values(CarPartLocation).map((e: any, i: any) => (
