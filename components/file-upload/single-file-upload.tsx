@@ -1,6 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 import Image from 'next/image'
+import { useRouter } from "next/navigation";
 import { LoaderCircle } from 'lucide-react';
 import { MOCK_carDamageData, CarPartLocation } from "@/lib/data";
 import { formatBytes, haveCommonItems } from "@/lib/utils";
@@ -21,7 +22,7 @@ const SingleFileUploader = () => {
   const labelAcceptedFileType = "png, jpeg";
   const regoInputMaxLength = 6;
 
-
+  const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -131,7 +132,12 @@ const SingleFileUploader = () => {
     setCarPartArray(carPartArray);
   }, [imgResult])
 
+  const RedirectToCamera = () => {
+    router.push(`/damageAnalyser/webCamera`);
+    return
+  }
 
+  
   return (
     <div className="w-full flex flex-col justify-normal items-center 
                       md:flex-row md:justify-center md:items-start">
@@ -147,7 +153,8 @@ const SingleFileUploader = () => {
           dark:file:bg-blue-500 dark:file:text-black file:border-0 file:p-3 file:px-4 file:rounded-l file:h-full file:font-semibold file:text-lg file:mr-5 file:hover:cursor-pointer
           file:bg-white file:text-black w-full'
           />
-          <button onClick={() => { }} className="p-2 bg-gray-400 rounded-lg md:hidden">Take a pic</button>
+          {/* Mobile phone Camera button */}
+          <button onClick={RedirectToCamera} className="p-2 bg-gray-400 rounded-lg md:hidden">Take a pic</button>
         </div>
 
         {!imgResult && (
