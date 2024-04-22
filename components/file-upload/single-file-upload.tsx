@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 import Image from 'next/image'
-import { LoaderCircle } from 'lucide-react';
+import { LoaderCircle, Camera } from 'lucide-react';
 import { MOCK_carDamageData, CarPartLocation } from "@/lib/data";
 import { dataURLtoFile, formatBytes, haveCommonItems } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
@@ -9,7 +9,7 @@ import { carPartType } from "@/types";
 
 import CarPartTick from "./car-part-tick";
 import ListOfCarParts from "./list-of-parts";
-import WebCamera from "./web-camera"
+import WebCamera from "./web-camera";
 
 const SingleFileUploader = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -19,13 +19,16 @@ const SingleFileUploader = () => {
   const [regoInput, setRegoInput] = useState('');
 
   const [isCameraActive, setIsCameraActive] = useState(false)
-  const [capturedImage, setCapturedImage] = useState<any>(null)
+  const [capturedImage, setCapturedImage] = useState(null)
 
   const [uploadError, setUploadError] = useState<string | null | unknown>(null);
   const [isUploading, setIsUploading] = useState(false);
 
   const labelAcceptedFileType = "png, jpeg";
   const regoInputMaxLength = 6;
+
+  const submitRegoUrl = '';
+  const analyzeImageUrl = 'https://rekognition-backend.azurewebsites.net/analyze';
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -52,10 +55,8 @@ const SingleFileUploader = () => {
       const formData = new FormData();
       formData.append("image", file);
 
-      const url = 'https://rekognition-backend.azurewebsites.net/analyze';
-
       try {
-        const result = await fetch(url, {
+        const result = await fetch(analyzeImageUrl, {
           method: "POST",
           body: formData
         });
@@ -100,7 +101,6 @@ const SingleFileUploader = () => {
   }
 
   const submitRego = async () => {
-    const submitRegoUrl = '';
     try {
       const result = await fetch(submitRegoUrl, {
         method: "POST",
@@ -166,7 +166,9 @@ const SingleFileUploader = () => {
             />
             {/* Mobile phone Camera button */}
             {!imgResult && (
-              <button onClick={RedirectToCamera} className="p-2 bg-gray-400 rounded-lg md:hidden">Take a pic</button>
+              <button onClick={RedirectToCamera} className=" bg-gray-800 rounded-lg md:hidden px-4">
+                <Camera className="text-white"/>
+              </button>
             )}
           </div>
 
@@ -253,8 +255,7 @@ const SingleFileUploader = () => {
       {/* Car diagram */}
       {imgResult !== '' && (
         <section className="w-fit h-full flex relative ">
-          <img src="/images/carDiagram.jpg" alt="Car Diagram image"
-            className="h-[500px] aspect-auto " />
+          <img src="/images/carDiagram.jpg" alt="Car Diagram image" className="h-[500px] aspect-auto " />
 
           <div className="absolute w-full h-full grid grid-cols-3 gap-x-6 justify-between">
             {Object.values(CarPartLocation).map((e: any, i: any) => (
