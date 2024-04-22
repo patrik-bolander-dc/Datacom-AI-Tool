@@ -1,28 +1,31 @@
 "use client"
 import { useEffect, useState } from "react";
 import Image from 'next/image'
-import { useRouter } from "next/navigation";
 import { LoaderCircle } from 'lucide-react';
 import { MOCK_carDamageData, CarPartLocation } from "@/lib/data";
-import { formatBytes, haveCommonItems } from "@/lib/utils";
+import { dataURLtoFile, formatBytes, haveCommonItems } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { carPartType } from "@/types";
 
 import CarPartTick from "./car-part-tick";
 import ListOfCarParts from "./list-of-parts";
+import WebCamera from "./web-camera"
 
 const SingleFileUploader = () => {
   const [file, setFile] = useState<File | null>(null);
-  const [imgResult, setImgResult] = useState('');
-  const [uploadError, setUploadError] = useState<string | null | unknown>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const [imgResult, setImgResult] = useState<string>('');
+
   const [carPartArray, setCarPartArray] = useState<carPartType[]>([]);
   const [regoInput, setRegoInput] = useState('');
 
+  const [isCameraActive, setIsCameraActive] = useState(false)
+  const [capturedImage, setCapturedImage] = useState<any>(null)
+
+  const [uploadError, setUploadError] = useState<string | null | unknown>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
   const labelAcceptedFileType = "png, jpeg";
   const regoInputMaxLength = 6;
-
-  const router = useRouter();
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -89,6 +92,7 @@ const SingleFileUploader = () => {
     setImgResult('');
     setFile(null);
     setUploadError(null);
+    setCapturedImage(null)
   }
 
   const handleRegoInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,6 +126,7 @@ const SingleFileUploader = () => {
     }
   }
 
+  // UseEffect for getting a list of recieved carparts
   useEffect(() => {
     let carPartArray: carPartType[] = [];
 
@@ -133,108 +138,117 @@ const SingleFileUploader = () => {
   }, [imgResult])
 
   const RedirectToCamera = () => {
-    router.push(`/damageAnalyser/webCamera`);
-    return
+    setIsCameraActive(true);
   }
 
-  
+  // UseEffect for converting capturedImage(Base64String) to File 
+  useEffect(() => {
+    if (capturedImage) {
+      var myFile = dataURLtoFile(capturedImage, 'capturedImage.jpeg');
+      setFile(myFile);
+    }
+  }, [capturedImage])
+
   return (
-    <div className="w-full flex flex-col justify-normal items-center 
-                      md:flex-row md:justify-center md:items-start">
-      {/* Card */}
-      <div className="w-full md:w-1/2 flex flex-col bg-gray-200 p-5 rounded-xl max-w-2xl min-w-20 dark:bg-gray-900 h-full">
-        <label className="flex justify-start text-black dark:text-blue-200/90">
-          <span>Accepted File Types: {labelAcceptedFileType}</span>
-        </label>
-        <div className="flex w-full justify-between gap-4 md:block">
-          <input type="file"
-            onChange={handleFileChange}
-            className='bg-blue-50 dark:bg-dcBlue rounded-xl border border-blue-500 text-lg h-full
+    <div className="w-full flex flex-col justify-normal items-center md:flex-row md:justify-center md:items-start">
+
+      {!isCameraActive ? (
+        < div className="w-full md:w-1/2 flex flex-col bg-gray-200 p-5 rounded-xl max-w-2xl min-w-20 dark:bg-gray-900 h-full">
+          <label className="flex justify-start text-black dark:text-blue-200/90">
+            <span>Accepted File Types: {labelAcceptedFileType}</span>
+          </label>
+          <div className="flex w-full justify-between gap-4 md:block">
+            <input type="file"
+              onChange={handleFileChange}
+              className='bg-blue-50 dark:bg-dcBlue rounded-xl border border-blue-500 text-lg h-full
           dark:file:bg-blue-500 dark:file:text-black file:border-0 file:p-3 file:px-4 file:rounded-l file:h-full file:font-semibold file:text-lg file:mr-5 file:hover:cursor-pointer
           file:bg-white file:text-black w-full'
-          />
-          {/* Mobile phone Camera button */}
-          <button onClick={RedirectToCamera} className="p-2 bg-gray-400 rounded-lg md:hidden">Take a pic</button>
-        </div>
-
-        {!imgResult && (
-          <div className="mt-3 gap-3 flex items-center">
-            <p className="whitespace-nowrap">Rego Number:</p>
-            <Input type="text" className="rounded flex-grow text-black bg-white dark:bg-gray-100" onChange={handleRegoInput} maxLength={regoInputMaxLength} />
+            />
+            {/* Mobile phone Camera button */}
+            {!imgResult && (
+              <button onClick={RedirectToCamera} className="p-2 bg-gray-400 rounded-lg md:hidden">Take a pic</button>
+            )}
           </div>
-        )}
 
-        {/* File Upload error */}
-        {uploadError && (
-          <label className="py-2">
-            <span className=" text-red-500">{uploadError as string}</span>
-          </label>
-        )}
-
-        {/* File details before uploading */}
-        {file && !imgResult && (
-          <section className="w-full pt-5 flex justify-between animate-fade-down animate-once animate-duration-1000 animate-delay-100 animate-ease-in-out">
-            <div className="">
-              <h3 className="font-semibold">File details</h3>
-              <ul>
-                <li><span className="font-semibold pr-1">Name:</span> {file.name}</li>
-                <li><span className="font-semibold pr-1">Type:</span> {file.type}</li>
-                <li><span className="font-semibold pr-1">Size:</span> {formatBytes(file.size)} MB</li>
-              </ul>
-            </div>
-            <div className="rounded-xl">
-              <Image
-                src={URL.createObjectURL(file)}
-                width={150}
-                height={150}
-                alt="Thumbnail image"
-                className="rounded-lg"
-              />
-            </div>
-          </section>
-        )}
-
-        {/* File upload button */}
-        {file && (
-          <button className='bg-white dark:bg-gray-200 text-black font-semibold rounded-lg py-1 mt-5' onClick={imgResult ? resetImageUpload : handleFileUpload}>
-            {imgResult && !isUploading && (<p>Upload another file</p>)}
-            {!imgResult && !isUploading && (<p>Upload file</p>)}
-            {isUploading && <p className="flex justify-center"><LoaderCircle className="animate-spin" /></p>}
-          </button>
-        )}
-
-        {uploadError !== null && (
-          <div className="w-full text-red-500 font-semibold ">
-            <p className="">An error has occurred</p>
-          </div>
-        )}
-
-        {/* Image result */}
-        <section className="w-full mt-5 max-w-2xl">
-          {imgResult !== '' && (
-            <div>
-              <h1>Photo Analysis</h1>
-              <img src={imgResult} alt="result image" />
-
-              <div className="text-xs">
-
-                <div className="flex w-full justify-center my-3">
-                  <div className="grid grid-flow-col grid-rows-3 grid-cols-2 text-sm gap-x-7 gap-y-2">
-                    <p>Year: {MOCK_carDamageData.car_info.Year}</p>
-                    <p>Make: {MOCK_carDamageData.car_info.Make}</p>
-                    <p>Model: {MOCK_carDamageData.car_info.Model}</p>
-                    <p>Color: {MOCK_carDamageData.car_info.Colour}</p>
-                    <p>Plate: {MOCK_carDamageData.car_info.Plate}</p>
-                    <p>Fuel Type: {MOCK_carDamageData.car_info["Fuel Type"]}</p>
-                  </div>
-                </div>
-                {/* Individual damaged parts */}
-                <ListOfCarParts />
-              </div>
+          {!imgResult && (
+            <div className="mt-3 gap-3 flex items-center">
+              <p className="whitespace-nowrap">Rego Number:</p>
+              <Input type="text" className="rounded flex-grow text-black bg-white dark:bg-gray-100" onChange={handleRegoInput} maxLength={regoInputMaxLength} />
             </div>
           )}
-        </section>
-      </div>
+
+          {/* File Upload error */}
+          {uploadError && (
+            <label className="py-2">
+              <span className=" text-red-500">{uploadError as string}</span>
+            </label>
+          )}
+
+          {/* File details before uploading */}
+          {file && !imgResult && (
+            <section className="w-full pt-5 flex justify-between animate-fade-down animate-once animate-duration-1000 animate-delay-100 animate-ease-in-out">
+              <div className="">
+                <h3 className="font-semibold">File details</h3>
+                <ul>
+                  <li><span className="font-semibold pr-1">Name:</span> {file.name}</li>
+                  <li><span className="font-semibold pr-1">Type:</span> {file.type}</li>
+                  <li><span className="font-semibold pr-1">Size:</span> {formatBytes(file.size)} MB</li>
+                </ul>
+              </div>
+              <div className="rounded-xl">
+                <Image
+                  src={URL.createObjectURL(file)}
+                  width={150}
+                  height={150}
+                  alt="Thumbnail preview of uploaded image"
+                  className="rounded-lg"
+                />
+              </div>
+            </section>
+          )}
+
+          {/* File upload button */}
+          {file && (
+            <button className='bg-white dark:bg-gray-200 text-black font-semibold rounded-lg py-1 mt-5' onClick={imgResult ? resetImageUpload : handleFileUpload}>
+              {imgResult && !isUploading && (<p>Upload another file</p>)}
+              {!imgResult && !isUploading && (<p>Upload file</p>)}
+              {isUploading && <p className="flex justify-center"><LoaderCircle className="animate-spin" /></p>}
+            </button>
+          )}
+
+          {uploadError !== null && (
+            <div className="w-full text-red-500 font-semibold ">
+              <p className="">An error has occurred</p>
+            </div>
+          )}
+
+          {/* Image result */}
+          <section className="w-full mt-5 max-w-2xl">
+            {imgResult !== '' && (
+              <div>
+                <h1>Photo Analysis</h1>
+                <img src={imgResult} alt="result image" />
+
+                <div className="text-xs">
+
+                  <div className="flex w-full justify-center my-3">
+                    <div className="grid grid-flow-col grid-rows-3 grid-cols-2 text-sm gap-x-7 gap-y-2">
+                      <p>Year: {MOCK_carDamageData.car_info.Year}</p>
+                      <p>Make: {MOCK_carDamageData.car_info.Make}</p>
+                      <p>Model: {MOCK_carDamageData.car_info.Model}</p>
+                      <p>Color: {MOCK_carDamageData.car_info.Colour}</p>
+                      <p>Plate: {MOCK_carDamageData.car_info.Plate}</p>
+                      <p>Fuel Type: {MOCK_carDamageData.car_info["Fuel Type"]}</p>
+                    </div>
+                  </div>
+                  {/* Individual damaged parts */}
+                  <ListOfCarParts />
+                </div>
+              </div>
+            )}
+          </section>
+        </div>
+      ) : (<WebCamera setCameraToActive={setIsCameraActive} setCapturedImage={setCapturedImage} />)}
 
       {/* Car diagram */}
       {imgResult !== '' && (
@@ -252,7 +266,7 @@ const SingleFileUploader = () => {
         </section>
       )}
 
-    </div>
+    </div >
   );
 };
 
