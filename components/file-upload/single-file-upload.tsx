@@ -21,14 +21,14 @@ const SingleFileUploader = () => {
   const [isCameraActive, setIsCameraActive] = useState(false)
   const [capturedImage, setCapturedImage] = useState(null)
 
-  const [uploadError, setUploadError] = useState<string | null | unknown>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
   const labelAcceptedFileType = "png, jpeg";
   const regoInputMaxLength = 6;
 
-  const submitRegoUrl = '';
   const analyzeImageUrl = 'https://rekognition-backend.azurewebsites.net/analyze';
+  const detailedInfoUrl = 'https://rekognition-backend.azurewebsites.net/detailed_info';
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -54,6 +54,7 @@ const SingleFileUploader = () => {
     if (file) {
       const formData = new FormData();
       formData.append("image", file);
+      formData.append("plate", regoInput);
 
       try {
         const result = await fetch(analyzeImageUrl, {
@@ -67,8 +68,8 @@ const SingleFileUploader = () => {
         // const result = new Response(myBlob, myOptions);
 
         if (!result.ok) {
-          console.error('Upload failed:', await result.text());
-          setUploadError(await result.text());
+          console.error('Upload failed:', await result.statusText);
+          setUploadError(await result.statusText);
           setIsUploading(false);
           return
         }
@@ -81,10 +82,11 @@ const SingleFileUploader = () => {
           setIsUploading(false);
         }
 
-      } catch (error) {
+      } catch (error: any) {
         console.error(error);
         setUploadError(error);
         setIsUploading(false);
+        alert('oh no itsaError')
       }
     }
   };
@@ -100,31 +102,6 @@ const SingleFileUploader = () => {
     setRegoInput(e.target.value);
   }
 
-  const submitRego = async () => {
-    try {
-      const result = await fetch(submitRegoUrl, {
-        method: "POST",
-        body: JSON.stringify({})
-      });
-
-      if (!result.ok) {
-        console.error('Rego Upload failed:', await result.text());
-        setUploadError(await result.text());
-        setIsUploading(false);
-        return
-      }
-
-      if (result.ok) {
-        const imageBlob = await result.blob();
-        const imageObjectURL = URL.createObjectURL(imageBlob);
-
-        setImgResult(imageObjectURL);
-        setIsUploading(false);
-      }
-    } catch (error) {
-      // TODO
-    }
-  }
 
   // UseEffect for getting a list of recieved carparts
   useEffect(() => {
@@ -147,7 +124,7 @@ const SingleFileUploader = () => {
       var myFile = dataURLtoFile(capturedImage, 'capturedImage.jpeg');
       setFile(myFile);
     }
-  }, [capturedImage])
+  }, [capturedImage]);
 
   return (
     <div className="w-full flex flex-col justify-normal items-center md:flex-row md:justify-center md:items-start">
@@ -159,6 +136,7 @@ const SingleFileUploader = () => {
           </label>
           <div className="flex w-full justify-between gap-4 md:block">
             <input type="file"
+            placeholder="Upload File"
               onChange={handleFileChange}
               className='bg-blue-50 dark:bg-dcBlue rounded-xl border border-blue-500 text-lg h-full
           dark:file:bg-blue-500 dark:file:text-black file:border-0 file:p-3 file:px-4 file:rounded-l file:h-full file:font-semibold file:text-lg file:mr-5 file:hover:cursor-pointer
@@ -166,8 +144,8 @@ const SingleFileUploader = () => {
             />
             {/* Mobile phone Camera button */}
             {!imgResult && (
-              <button onClick={RedirectToCamera} className=" bg-gray-800 rounded-lg md:hidden px-4">
-                <Camera className="text-white"/>
+              <button onClick={RedirectToCamera} className=" bg-gray-800 dark:bg-gray-300 rounded-lg md:hidden px-4">
+                <Camera className="text-white dark:text-gray-700" />
               </button>
             )}
           </div>
@@ -179,7 +157,7 @@ const SingleFileUploader = () => {
             </div>
           )}
 
-          {/* File Upload error */}
+         
           {uploadError && (
             <label className="py-2">
               <span className=" text-red-500">{uploadError as string}</span>
@@ -203,7 +181,7 @@ const SingleFileUploader = () => {
                   width={150}
                   height={150}
                   alt="Thumbnail preview of uploaded image"
-                  className="rounded-lg"
+                  className="rounded-lg h-auto"
                 />
               </div>
             </section>
@@ -218,6 +196,7 @@ const SingleFileUploader = () => {
             </button>
           )}
 
+          {/* File Upload Error */}
           {uploadError !== null && (
             <div className="w-full text-red-500 font-semibold ">
               <p className="">An error has occurred</p>
@@ -226,7 +205,7 @@ const SingleFileUploader = () => {
 
           {/* Image result */}
           <section className="w-full mt-5 max-w-2xl">
-            {imgResult !== '' && (
+            {imgResult !== '' && !uploadError && (
               <div>
                 <h1>Photo Analysis</h1>
                 <img src={imgResult} alt="result image" />
@@ -250,10 +229,13 @@ const SingleFileUploader = () => {
             )}
           </section>
         </div>
-      ) : (<WebCamera setCameraToActive={setIsCameraActive} setCapturedImage={setCapturedImage} />)}
+      ) : (
+        // Passing functions for parent to control displaying the Camera component
+        <WebCamera setCameraToActive={setIsCameraActive} setCapturedImage={setCapturedImage} />
+      )}
 
       {/* Car diagram */}
-      {imgResult !== '' && (
+      {imgResult !== '' && !uploadError && (
         <section className="w-fit h-full flex relative ">
           <img src="/images/carDiagram.jpg" alt="Car Diagram image" className="h-[500px] aspect-auto " />
 
