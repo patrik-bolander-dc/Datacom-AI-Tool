@@ -29,18 +29,27 @@ interface SingleFileUploaderProps {
   side: string;
 }
 
-const atomsMap: { [key: string]: any } = {
+const FileMap: { [key: string]: any } = {
   left: LeftFile,
   right: RightFile,
   front: FrontFile,
   back: BackFile,
 };
 
+const ResultFileMap: { [key: string]: any } = {
+  left: LeftImageResult,
+  right: RightImageResult,
+  front: FrontImageResult,
+  back: BackImageResult,
+};
+
 const SingleFileUploader = ({ side }: SingleFileUploaderProps) => {
 
-  const atomForSide = useMemo(() => atomsMap[side], [side]);
+  const atomForSide = useMemo(() => FileMap[side], [side]);
   const [file, setFile] = useAtom(atomForSide);
-  const [hasResult, setHasResult] = useAtom(FrontImageResult); // solve this
+
+  const atomForResultFile = ResultFileMap[side]
+  const [hasResult, setHasResult] = useAtom(atomForResultFile);
 
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
@@ -95,17 +104,29 @@ const SingleFileUploader = ({ side }: SingleFileUploaderProps) => {
             )}
           </div>
 
-          {/* File details before uploading */}
-          {file !== null && !hasResult && (
+
+          {(file !== null) && (
             <section className="w-full pt-5 flex justify-between animate-fade-down animate-once animate-duration-1000 animate-delay-100 animate-ease-in-out">
               <div className="rounded-xl">
-                <Image
-                  src={URL.createObjectURL(file as File)}
-                  width={150}
-                  height={150}
-                  alt="Thumbnail preview of uploaded image"
-                  className="rounded-lg h-auto"
-                />
+                {file !== null && hasResult === null && (
+                  <Image
+                    src={URL.createObjectURL(file as File)}
+                    width={150}
+                    height={150}
+                    alt="Thumbnail preview of uploaded image"
+                    className="rounded-lg h-auto"
+                  />
+                )}
+                {hasResult !== null && (
+                  <Image
+                    src={hasResult as string}
+                    width={150}
+                    height={150}
+                    alt="Thumbnail preview of uploaded image"
+                    className="rounded-lg h-auto"
+                  />
+                )}
+
               </div>
             </section>
           )}
@@ -114,7 +135,7 @@ const SingleFileUploader = ({ side }: SingleFileUploaderProps) => {
         <WebCamera setCameraToActive={setIsCameraActive} setCapturedImage={setCapturedImage} />
       )}
 
-      
+
 
     </div >
   );

@@ -52,3 +52,13 @@ export const CarPartLocation = {
     15 : [carPart.BACK_RIGHT_BUMBER],
 } as any
 
+export const MOCK_VehicleData = {
+    "car_info": {
+        "Colour": "Grey",
+        "Fuel Type": "Diesel",
+        "Make": "NISSAN",
+        "Model": "NAVARA",
+        "Plate": "HRT521",
+        "Year": "2014"
+    },
+}

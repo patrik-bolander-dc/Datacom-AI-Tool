@@ -23,3 +23,12 @@ export enum carPart {
 } 
 
 export type carPartType = Record<carPart, string>;
+
+export enum carSide {
+    FRONT = 'front',
+    LEFT = 'left',
+    RIGHT = 'right',
+    BACK = 'back'
+}
+
+export type carSideType = Record<carSide, string>;

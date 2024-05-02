@@ -1,27 +1,30 @@
 "use client"
 import SingleFileUploader from '@/components/multiple-file-upload/single-file-upload';
 import React, { useEffect, useState } from 'react'
-import { carPartType } from '@/types';
+import { carPartType, carSide } from '@/types';
 import ListOfCarParts from '@/components/multiple-file-upload/list-of-parts';
-import { BackFile, 
-  BackImageResult, 
-  FrontFile, 
-  FrontImageResult, 
-  IsCameraActive, 
-  IsUploading, 
-  JsonResult, 
-  LeftFile, 
-  LeftImageResult, 
-  RegoNumber, 
-  ResetAllAtoms, 
-  RightFile, 
-  RightImageResult, 
-  UploadError } from '@/components/Atoms/FileAtoms';
+import {
+  BackFile,
+  BackImageResult,
+  FrontFile,
+  FrontImageResult,
+  IsCameraActive,
+  IsUploading,
+  JsonResult,
+  LeftFile,
+  LeftImageResult,
+  RegoNumber,
+  ResetAllAtoms,
+  RightFile,
+  RightImageResult,
+  UploadError
+} from '@/components/Atoms/FileAtoms';
 import { useAtom } from 'jotai';
 import { LoaderCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import CarPartTick from '@/components/multiple-file-upload/car-part-tick';
-import { haveCommonItems } from '@/lib/utils';
+import { MOCK_VehicleData } from '@/lib/data';
+
 
 function MulitpleDamageAnalyser() {
 
@@ -29,6 +32,7 @@ function MulitpleDamageAnalyser() {
   const regoInputMaxLength = 6;
 
   const multipleImageUpload = 'https://rekognition-backend.azurewebsites.net/damage_analysis';
+  const analyzeImageUrl = 'https://rekognition-backend.azurewebsites.net/analyze';
 
   const [carPartArray, setCarPartArray] = useState<carPartType[]>([]);
 
@@ -54,7 +58,14 @@ function MulitpleDamageAnalyser() {
   const isAllFilesSelected = frontFile && leftFile && rightFile && backFile;
   const hasAnyImageResult = frontImageResult || leftImageResult || rightImageResult || backImageResult;
 
-  const [effectedCarParts, setEffectedCarParts] = useState<string[]>()
+  const [effectedCarParts, setEffectedCarParts] = useState<carSide[]>()
+
+  const FileMap: { [key: string]: any } = {
+    left: leftFile,
+    right: rightFile,
+    front: frontFile,
+    back: backFile,
+  };
 
   const handleAllFileUploads = async () => {
     if (!isAnyFilesSelected) {
@@ -93,7 +104,6 @@ function MulitpleDamageAnalyser() {
         // const imageBlob = await result.blob();
         const response = await result.json();
         setJsonResult(response);
-        console.log(response);
         // const imageObjectURL = URL.createObjectURL(imageBlob);
         // const frontImageObjectURL = URL.createObjectURL(imageBlob);
         // const leftImageObjectURL = URL.createObjectURL(imageBlob);
@@ -117,25 +127,43 @@ function MulitpleDamageAnalyser() {
   };
 
   useEffect(() => {
+    // Create an Array of affected carsides
     let tempEffectedCarParts = [];
     if (jsonResult?.car_front && jsonResult.car_front.length > 0) {
-      tempEffectedCarParts.push('front')
+      tempEffectedCarParts.push(carSide.FRONT)
     }
     if (jsonResult?.car_left && jsonResult.car_left.length > 0) {
-      tempEffectedCarParts.push('left')
+      tempEffectedCarParts.push(carSide.LEFT)
     }
     if (jsonResult?.car_right && jsonResult.car_right.length > 0) {
-      tempEffectedCarParts.push('right')
+      tempEffectedCarParts.push(carSide.RIGHT)
     }
     if (jsonResult?.car_back && jsonResult.car_back.length > 0) {
-      tempEffectedCarParts.push('back')
+      tempEffectedCarParts.push(carSide.BACK)
     }
 
     setEffectedCarParts(tempEffectedCarParts);
+
+    // Calling and retieving analyzed images of damaged sides
+    tempEffectedCarParts.forEach((side: carSide) => {
+      console.log('side', side)
+      const file =  FileMap[side]
+      analyseVehicleImage(file, side);
+    })
   }, [jsonResult])
-  
+
 
   const resetAllAtoms = () => {
+    setFrontFile(null)
+    setLeftFile(null)
+    setRightFile(null)
+    setBackFile(null)
+    setFrontImageResult(null)
+    setLeftImageResult(null)
+    setRightImageResult(null)
+    setBackImageResult(null)
+    setRegoNumber(null)
+    setUploadError(null)
     setJsonResult(null)
   }
 
@@ -143,11 +171,62 @@ function MulitpleDamageAnalyser() {
     setRegoNumber(e.target.value);
   }
 
-  useEffect(() => {
-    setJsonResult(null)
-  }, [])
-  
-  
+  // useEffect(() => {
+  //   setJsonResult(null)
+  // }, [])
+
+  const analyseVehicleImage = async (file: File, side: carSide) => {
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+      const result = await fetch(analyzeImageUrl, {
+        method: "POST",
+        body: formData
+      });
+
+      // DEV ONLY - Temporarily disabling the fetch call for dev work
+      // const myBlob = new Blob();
+      // const myOptions = { status: 200, statusText: "its all good!" };
+      // const result = new Response(myBlob, myOptions);
+
+      if (!result.ok) {
+        console.error('Upload failed:', await result.statusText);
+        setUploadError(await result.statusText);
+        setIsUploading(false);
+        return
+      }
+
+      if (result.ok) {
+        const imageBlob = await result.blob();
+        const imageObjectURL = URL.createObjectURL(imageBlob);
+        console.log('imageUrl', imageObjectURL)
+        console.log('side', side)
+
+        if (side === carSide.FRONT) {
+          setFrontImageResult(imageObjectURL)
+        }
+        if (side === carSide.LEFT) {
+          setLeftImageResult(imageObjectURL)
+        }
+        if (side === carSide.RIGHT) {
+          setRightImageResult(imageObjectURL)
+        }
+        if (side === carSide.BACK) {
+          setBackImageResult(imageObjectURL)
+        }
+
+        setIsUploading(false);
+      }
+
+    } catch (error: any) {
+      console.error(error);
+      setUploadError(error);
+      setIsUploading(false);
+    }
+
+  };
 
   return (
     <div className='w-full mt-5 px-5 flex flex-col gap-5'>
@@ -157,21 +236,21 @@ function MulitpleDamageAnalyser() {
         <SingleFileUploader side='right' />
         <SingleFileUploader side='back' />
       </div>
-      {/* Rego input */}
 
-      {!hasAnyImageResult && (
+      {/* Rego input */}
+      {!jsonResult && (
         <div className="mt-3 gap-3 flex items-center">
-          <p className="whitespace-nowrap">Rego Number:</p>
+          <p className="whitespace-nowrap">Plate Number:</p>
           <Input type="text" className="rounded flex-grow text-black bg-white dark:bg-gray-100" onChange={handleRegoInput} maxLength={regoInputMaxLength} />
         </div>
       )}
 
-      <div className="bg-white w-full flex flex-col">
+      <div className=" w-full flex flex-col ">
         {/* Upload Button */}
         {isAllFilesSelected && (
-          <button className='bg-green-500 dark:bg-gray-200 text-black font-semibold rounded-lg p-3' onClick={hasAnyImageResult ? resetAllAtoms : handleAllFileUploads}>
+          <button className='bg-green-500 text-white dark:bg-green-300 dark:text-gray-900 font-semibold rounded-lg p-3' onClick={jsonResult ? resetAllAtoms : handleAllFileUploads}>
             {!jsonResult && !isUploading && (<p>Upload file</p>)} {/* default */}
-            {jsonResult && !isUploading && (<p>Upload another file</p>)} {/* after finishing  */}
+            {jsonResult && !isUploading && (<p>Upload another Vehicle</p>)} {/* after finishing  */}
             {isUploading && <p className="flex justify-center"><LoaderCircle className="animate-spin" /></p>}
           </button>
         )}
@@ -181,37 +260,48 @@ function MulitpleDamageAnalyser() {
             <span className="text-red-500">{uploadError as string}</span>
           </label>
         )}
+      </div>
 
-        {jsonResult && !uploadError && (
+      {jsonResult && !uploadError && (
+        <div className="w-full flex flex-col md:flex-row justify-center bg-gray-200 dark:bg-gray-300 rounded-lg p-3 gap-10 ">
           <div className="text-xs">
-            <ListOfCarParts arrayOfParts={jsonResult['car_front']} title='Front'/>
-            <ListOfCarParts arrayOfParts={jsonResult['car_left']} title='Left'/>
-            <ListOfCarParts arrayOfParts={jsonResult['car_right']} title='Right'/>
-            <ListOfCarParts arrayOfParts={jsonResult['car_back']} title='Back'/>
+            <ListOfCarParts arrayOfParts={jsonResult['car_front']} title='Front' />
+            <ListOfCarParts arrayOfParts={jsonResult['car_left']} title='Left' />
+            <ListOfCarParts arrayOfParts={jsonResult['car_right']} title='Right' />
+            <ListOfCarParts arrayOfParts={jsonResult['car_back']} title='Back' />
           </div>
-        )}
 
-        {/* Car diagram */}
-        {jsonResult && !uploadError && (
+          {/* Car diagram */}
           <section className="w-fit h-full flex relative ">
             <img src="/images/carDiagram.jpg" alt="Car Diagram image" className="h-[500px] aspect-auto " />
 
             <div className="absolute w-full h-full flex flex-col justify-between ">
               <div className='front w-full flex justify-center '>
-                <CarPartTick isTicked={effectedCarParts?.includes('front')} />
+                <CarPartTick isTicked={effectedCarParts?.includes(carSide.FRONT)} />
               </div>
               <div className='w-full flex justify-between '>
-                <CarPartTick isTicked={effectedCarParts?.includes('left')} />
-                <CarPartTick isTicked={effectedCarParts?.includes('right')} />
+                <CarPartTick isTicked={effectedCarParts?.includes(carSide.LEFT)} />
+                <CarPartTick isTicked={effectedCarParts?.includes(carSide.RIGHT)} />
               </div>
               <div className='back w-full flex justify-center'>
-                <CarPartTick isTicked={effectedCarParts?.includes('back')} />
+                <CarPartTick isTicked={effectedCarParts?.includes(carSide.BACK)} />
               </div>
             </div>
           </section>
-        )}
 
-      </div>
+          <section>
+            <div className="flex flex-col gap-4 text-black">
+              <p><span className='font-semibold'>Year:</span> {MOCK_VehicleData.car_info.Year}</p>
+              <p><span className='font-semibold'>Make:</span> {MOCK_VehicleData.car_info.Make}</p>
+              <p><span className='font-semibold'>Model:</span> {MOCK_VehicleData.car_info.Model}</p>
+              <p><span className='font-semibold'>Color:</span> {MOCK_VehicleData.car_info.Colour}</p>
+              <p><span className='font-semibold'>Plate:</span> {MOCK_VehicleData.car_info.Plate}</p>
+              <p><span className='font-semibold'>Fuel Type:</span> {MOCK_VehicleData.car_info["Fuel Type"]}</p>
+            </div>
+          </section>
+
+        </div>
+      )}
     </div>
   )
 }
