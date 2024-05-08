@@ -32,3 +32,9 @@ export enum carSide {
 }
 
 export type carSideType = Record<carSide, string>;
+
+export type CameraType = 'front' | 'back' | 'left' | 'right' | null;
+export type FileType = File | null;
+export type ImageResultType = string | null;
+export type RegoNumberType = string | null; 
+export type ErrorType = string | null;

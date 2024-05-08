@@ -16,7 +16,8 @@ import {
   RegoNumber,
   RightFile,
   RightImageResult,
-  UploadError
+  UploadError,
+  WhichCameraIsActive
 } from '@/components/Atoms/FileAtoms';
 import { useAtom } from 'jotai';
 import { LoaderCircle } from 'lucide-react';
@@ -42,14 +43,15 @@ function MulitpleDamageAnalyser() {
   const [leftImageResult, setLeftImageResult] = useAtom(LeftImageResult);
   const [rightImageResult, setRightImageResult] = useAtom(RightImageResult);
   const [backImageResult, setBackImageResult] = useAtom(BackImageResult);
-  const [jsonResult, setJsonResult] = useAtom(JsonResult)
+  const [jsonResult, setJsonResult] = useAtom(JsonResult);
 
   const [regoNumber, setRegoNumber] = useAtom(RegoNumber);
 
   const [uploadError, setUploadError] = useAtom(UploadError);
   const [isUploading, setIsUploading] = useAtom(IsUploading);
 
-  const [isCameraActive, setIsCameraActive] = useAtom(IsCameraActive); // TODO
+  const [isCameraActive, setIsCameraActive] = useAtom(IsCameraActive); 
+  const [whichCameraIsActive, setWhichCameraIsActive] = useAtom(WhichCameraIsActive);
 
   const isAnyFilesSelected = frontFile || leftFile || rightFile || backFile;
   const isAllFilesSelected = frontFile && leftFile && rightFile && backFile;
@@ -228,7 +230,7 @@ function MulitpleDamageAnalyser() {
         </div>
       )}
 
-      <div className=" w-full flex flex-col ">
+      <div className=" w-full flex flex-col">
         {/* Upload Button */}
         {isAllFilesSelected && (
           <button className='bg-green-500 text-white dark:bg-green-300 dark:text-gray-900 font-semibold rounded-lg p-3' onClick={jsonResult ? resetAllAtoms : handleAllFileUploads}>

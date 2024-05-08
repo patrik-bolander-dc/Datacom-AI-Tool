@@ -1,14 +1,10 @@
 "use client"
-import { SetStateAction, useEffect, useMemo, useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Image from 'next/image'
-import { LoaderCircle, Camera } from 'lucide-react';
-import { MOCK_carDamageData, CarPartLocation } from "@/lib/data";
-import { dataURLtoFile, formatBytes, haveCommonItems } from "@/lib/utils";
-import { Input } from "@/components/ui/input";
-import { carPartType } from "@/types";
+import { Camera } from 'lucide-react';
+import { dataURLtoFile} from "@/lib/utils";
+import { CameraType } from "@/types";
 
-import CarPartTick from "./car-part-tick";
-import ListOfCarParts from "./list-of-parts";
 import WebCamera from "./web-camera";
 import { useAtom } from "jotai";
 import {
@@ -21,12 +17,13 @@ import {
   LeftImageResult,
   RightFile,
   RightImageResult,
+  WhichCameraIsActive,
   UploadError
 } from '@/components/Atoms/FileAtoms';
 
 
 interface SingleFileUploaderProps {
-  side: string;
+  side?: CameraType;
 }
 
 const FileMap: { [key: string]: any } = {
@@ -45,13 +42,19 @@ const ResultFileMap: { [key: string]: any } = {
 
 const SingleFileUploader = ({ side }: SingleFileUploaderProps) => {
 
+  // Check if side is a valid key in FileMap and ResultFileMap
+  if (!side || !Object.keys(FileMap).includes(side) || !Object.keys(ResultFileMap).includes(side)){
+    throw new Error(`Invalid side: ${side}`);
+  }
+
   const atomForSide = useMemo(() => FileMap[side], [side]);
   const [file, setFile] = useAtom(atomForSide);
 
-  const atomForResultFile = ResultFileMap[side]
+  const atomForResultFile = ResultFileMap[side];
   const [hasResult, setHasResult] = useAtom(atomForResultFile);
 
   const [isCameraActive, setIsCameraActive] = useState(false);
+  const [whichCameraIsActive, setWhichCameraIsActive] = useAtom(WhichCameraIsActive);
   const [capturedImage, setCapturedImage] = useState(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -67,6 +70,7 @@ const SingleFileUploader = ({ side }: SingleFileUploaderProps) => {
 
   const RedirectToCamera = () => {
     setIsCameraActive(true);
+    setWhichCameraIsActive(side);
   }
 
   useEffect(() => {
@@ -80,6 +84,8 @@ const SingleFileUploader = ({ side }: SingleFileUploaderProps) => {
       var myFile = dataURLtoFile(capturedImage, 'capturedImage.jpeg');
       setFile(myFile);
     }
+
+    setWhichCameraIsActive(null);
   }, [capturedImage]);
 
   return (

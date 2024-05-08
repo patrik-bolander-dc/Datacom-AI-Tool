@@ -9,7 +9,7 @@ const WebCamera = ({setCameraToActive, setCapturedImage}) => {
     const [img, setImg] = useState(null);
 
     const BackToDamageAnalyzer = () => {
-        setCameraToActive(false)
+        setCameraToActive(false);
         return
     }
 
@@ -31,7 +31,7 @@ const WebCamera = ({setCameraToActive, setCapturedImage}) => {
     }
 
     const retakeImage = () => {
-        setImg(null)
+        setImg(null);
     }
 
     return (
