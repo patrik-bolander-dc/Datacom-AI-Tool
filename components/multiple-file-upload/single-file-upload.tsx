@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Image from 'next/image'
 import { Camera } from 'lucide-react';
-import { dataURLtoFile} from "@/lib/utils";
+import { capitalize, dataURLtoFile} from "@/lib/utils";
 import { CameraType } from "@/types";
 
 import WebCamera from "./web-camera";
@@ -92,9 +92,9 @@ const SingleFileUploader = ({ side }: SingleFileUploaderProps) => {
     <div className="w-full">
       {!isCameraActive ? (
         <div className="w-full flex flex-col bg-gray-200 p-5 rounded-xl max-w-2xl min-w-20 dark:bg-gray-900 h-full">
-          <h1 className="w-full text-center font-semibold text-2xl">{side}</h1>
+          <h1 className="w-full text-center font-semibold text-2xl">{capitalize(side)}</h1>
 
-          <div className="flex w-full justify-between gap-4 md:block">
+          <div className="flex w-full justify-between gap-4 md:block mt-2">
             <input type="file"
               placeholder="Upload File"
               onChange={handleFileChange}

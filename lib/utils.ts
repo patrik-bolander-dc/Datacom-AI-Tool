@@ -33,3 +33,7 @@ export function dataURLtoFile(dataurl: any, filename: string) {
   }
   return new File([u8arr], filename, { type: mime });
 }
+
+export function capitalize(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
