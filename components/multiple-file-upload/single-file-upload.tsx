@@ -26,6 +26,7 @@ import ImageWithDetailedView from "./image-with-detailed-view";
 
 interface SingleFileUploaderProps {
   side?: CameraType;
+  isActive?: boolean;
 }
 
 const FileMap: { [key: string]: any } = {
@@ -42,7 +43,7 @@ const ResultFileMap: { [key: string]: any } = {
   back: BackImageResult,
 };
 
-const SingleFileUploader = ({ side }: SingleFileUploaderProps) => {
+const SingleFileUploader = ({ side, isActive }: SingleFileUploaderProps) => {
 
   // Check if side is a valid key in FileMap and ResultFileMap
   if (!side || !Object.keys(FileMap).includes(side) || !Object.keys(ResultFileMap).includes(side)) {
@@ -81,7 +82,6 @@ const SingleFileUploader = ({ side }: SingleFileUploaderProps) => {
     setFile(hasResult)
   }, [hasResult])
 
-
   // UseEffect for converting capturedImage(Base64String) to File 
   useEffect(() => {
     if (capturedImage) {
@@ -114,7 +114,7 @@ const SingleFileUploader = ({ side }: SingleFileUploaderProps) => {
               </button>
             )}
           </div>
-          
+
           {/* Image Thumbnail - Handles File when uploading or returned Image with Diaolog box */}
           {(file !== null) && (
             <section className="w-full pt-5 flex justify-center animate-fade-down animate-once animate-duration-1000 animate-delay-100 animate-ease-in-out">

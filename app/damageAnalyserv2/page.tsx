@@ -1,7 +1,7 @@
 "use client"
 import SingleFileUploader from '@/components/multiple-file-upload/single-file-upload';
 import React, { useEffect, useState } from 'react'
-import {carSide } from '@/types';
+import { carSide } from '@/types';
 import ListOfCarParts from '@/components/multiple-file-upload/list-of-parts';
 import {
   BackFile,
@@ -49,8 +49,8 @@ function MulitpleDamageAnalyser() {
   const [uploadError, setUploadError] = useAtom(UploadError);
   const [isUploading, setIsUploading] = useAtom(IsUploading);
 
-  // const [isCameraActive, setIsCameraActive] = useAtom(IsCameraActive); 
-  // const [whichCameraIsActive, setWhichCameraIsActive] = useAtom(WhichCameraIsActive);
+  const [isCameraActive, setIsCameraActive] = useAtom(IsCameraActive);
+  const [whichCameraIsActive, setWhichCameraIsActive] = useAtom(WhichCameraIsActive);
 
   const isAnyFilesSelected = frontFile || leftFile || rightFile || backFile;
   const isAllFilesSelected = frontFile && leftFile && rightFile && backFile;
@@ -74,7 +74,7 @@ function MulitpleDamageAnalyser() {
       setUploadError('Please enter a plate number');
       return
     }
-    
+
     setUploadError(null);
     setIsUploading(true)
 
@@ -136,7 +136,7 @@ function MulitpleDamageAnalyser() {
 
     // Calling and retieving analyzed images of damaged sides
     tempEffectedCarParts.forEach((side: carSide) => {
-      const file =  FileMap[side]
+      const file = FileMap[side]
       analyseVehicleImage(file, side);
     })
   }, [jsonResult])
@@ -216,7 +216,7 @@ function MulitpleDamageAnalyser() {
   };
 
   return (
-    
+
     <div className='w-full mt-5 px-5 flex flex-col gap-5'>
       <div className="flex flex-col lg:flex-row gap-5">
         <SingleFileUploader side='front' />
