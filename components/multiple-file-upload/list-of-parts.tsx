@@ -18,7 +18,7 @@ const ListOfCarParts = ({arrayOfParts, title}: ListOfCarPartsProps) => {
 
   return (
     <div className="pl-1 text-black">
-      <h1 className="text-lg font-semibold">{title}</h1>
+      <h1 className="text-lg font-semibold">{capitalize(title)}</h1>
       <ul className="text-xs">
         {arrayOfParts?.map((item: any, index: number) => (
           <li key={index} className='py-2 space-x-2'>
