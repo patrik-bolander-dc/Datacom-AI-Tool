@@ -49,3 +49,15 @@ export const SideMapToJsonResult: SideMapToJsonResult = {
     left: 'car_left',
     right: 'car_right',
 };
+
+export type CarPartColorMap = {
+    [part: string]: string;
+};
+
+export type ListOfCarPartsProps = {
+    arrayOfParts: {
+        Name: string;
+        Confidence: number;
+    }[];
+    title: string;
+};

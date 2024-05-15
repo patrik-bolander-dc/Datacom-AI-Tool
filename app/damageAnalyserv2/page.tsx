@@ -49,8 +49,8 @@ function MulitpleDamageAnalyser() {
   const [uploadError, setUploadError] = useAtom(UploadError);
   const [isUploading, setIsUploading] = useAtom(IsUploading);
 
-  const [isCameraActive, setIsCameraActive] = useAtom(IsCameraActive); 
-  const [whichCameraIsActive, setWhichCameraIsActive] = useAtom(WhichCameraIsActive);
+  // const [isCameraActive, setIsCameraActive] = useAtom(IsCameraActive); 
+  // const [whichCameraIsActive, setWhichCameraIsActive] = useAtom(WhichCameraIsActive);
 
   const isAnyFilesSelected = frontFile || leftFile || rightFile || backFile;
   const isAllFilesSelected = frontFile && leftFile && rightFile && backFile;
@@ -70,6 +70,12 @@ function MulitpleDamageAnalyser() {
       return
     }
 
+    if (!regoNumber) {
+      setUploadError('Please enter a plate number');
+      return
+    }
+    
+    setUploadError(null);
     setIsUploading(true)
 
     const formData = new FormData();

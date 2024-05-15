@@ -2,7 +2,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Image from 'next/image'
 import { Camera } from 'lucide-react';
-import { capitalize, dataURLtoFile} from "@/lib/utils";
+import { capitalize, dataURLtoFile } from "@/lib/utils";
 import { CameraType, SideMapToJsonResult } from "@/types";
 
 import WebCamera from "./web-camera";
@@ -45,7 +45,7 @@ const ResultFileMap: { [key: string]: any } = {
 const SingleFileUploader = ({ side }: SingleFileUploaderProps) => {
 
   // Check if side is a valid key in FileMap and ResultFileMap
-  if (!side || !Object.keys(FileMap).includes(side) || !Object.keys(ResultFileMap).includes(side)){
+  if (!side || !Object.keys(FileMap).includes(side) || !Object.keys(ResultFileMap).includes(side)) {
     throw new Error(`Invalid side: ${side}`);
   }
 
@@ -114,7 +114,8 @@ const SingleFileUploader = ({ side }: SingleFileUploaderProps) => {
               </button>
             )}
           </div>
-
+          
+          {/* Image Thumbnail - Handles File when uploading or returned Image with Diaolog box */}
           {(file !== null) && (
             <section className="w-full pt-5 flex justify-center animate-fade-down animate-once animate-duration-1000 animate-delay-100 animate-ease-in-out">
               <div className="rounded-xl">

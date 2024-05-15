@@ -3,12 +3,10 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-
 import Image from 'next/image'
 import ListOfCarParts from "./list-of-parts"
 import { capitalize } from "@/lib/utils"
@@ -56,7 +54,6 @@ const ImageWithDetailedView = ({ imageUrl, side, arrayOfDamage }: ImageWithDetai
             <li className="list-disc">Auckland</li>
           </ul>
         </div>
-
       </DialogContent>
     </Dialog>
   );

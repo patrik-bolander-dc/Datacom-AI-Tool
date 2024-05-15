@@ -1,13 +1,16 @@
-import { carPart } from "@/types";
-import { roundDp } from "@/lib/utils";
+import { capitalize, cn, roundDp } from "@/lib/utils";
+import { CarPartColorMap, ListOfCarPartsProps } from "@/types";
 
-export const carPartColorMap = {
-  "scratch": 'bg-red-500',
-  'glass shatter': 'bg-blue-500',
-} as any;
+export const carPartColorMap: CarPartColorMap = {
+  'scratch': 'bg-orange-500',
+  'glass shatter': 'bg-red-500',
+  'tire flat': 'bg-green-500',
+  'dent': 'bg-blue-500',
+  'crack': 'bg-gray-500',
+  'lamp broken': 'bg-purple-500',
+};
 
-
-const ListOfCarParts = ({arrayOfParts, title}: any) => {
+const ListOfCarParts = ({arrayOfParts, title}: ListOfCarPartsProps) => {
 
   if (!arrayOfParts || arrayOfParts.length === 0 ) {
     return <></>
@@ -19,8 +22,8 @@ const ListOfCarParts = ({arrayOfParts, title}: any) => {
       <ul className="text-xs">
         {arrayOfParts?.map((item: any, index: number) => (
           <li key={index} className='py-2 space-x-2'>
-            <span className={`rounded py-0.5 px-4 text-white bg-gray-500`}> {roundDp(item.Confidence)}% </span>
-            <span>{item.Name}</span>
+            <span className={cn(`rounded py-0.5 px-4 text-white bg-gray-500`, carPartColorMap[item.Name])}> {roundDp(item.Confidence)}% </span>
+            <span>{capitalize(item.Name)}</span>
           </li>
         ))}
       </ul>
