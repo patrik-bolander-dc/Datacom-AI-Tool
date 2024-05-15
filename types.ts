@@ -18,8 +18,46 @@ export enum carPart {
     BACK_LEFT_TIRE = 'BACK_LEFT_TIRE',
     BACK_RIGHT_TIRE = 'BACK_RIGHT_TIRE',
     BACK_LEFT_BUMBER = 'BACK_LEFT_BUMBER',
-    BACK_MIDDLE_BUMBER= 'BACK_MIDDLE_BUMBER',
+    BACK_MIDDLE_BUMBER = 'BACK_MIDDLE_BUMBER',
     BACK_RIGHT_BUMBER = 'BACK_RIGHT_BUMBER',
-} 
+}
 
 export type carPartType = Record<carPart, string>;
+
+export enum carSide {
+    FRONT = 'front',
+    LEFT = 'left',
+    RIGHT = 'right',
+    BACK = 'back'
+}
+
+export type carSideType = Record<carSide, string>;
+
+export type CameraType = 'front' | 'back' | 'left' | 'right' | null;
+export type FileType = File | null;
+export type ImageResultType = string | null;
+export type RegoNumberType = string | null;
+export type ErrorType = string | null;
+
+type SideMapToJsonResult = {
+    [key: string]: string;
+};
+
+export const SideMapToJsonResult: SideMapToJsonResult = {
+    front: 'car_front',
+    back: 'car_back',
+    left: 'car_left',
+    right: 'car_right',
+};
+
+export type CarPartColorMap = {
+    [part: string]: string;
+};
+
+export type ListOfCarPartsProps = {
+    arrayOfParts: {
+        Name: string;
+        Confidence: number;
+    }[];
+    title: string;
+};
