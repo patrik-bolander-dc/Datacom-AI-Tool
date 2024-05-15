@@ -117,7 +117,7 @@ const SingleFileUploader = ({ side, isActive }: SingleFileUploaderProps) => {
 
           {/* Image Thumbnail - Handles File when uploading or returned Image with Diaolog box */}
           {(file !== null) && (
-            <section className="w-full pt-5 flex justify-center animate-fade-down animate-once animate-duration-1000 animate-delay-100 animate-ease-in-out">
+            <section className="w-full pt-3 flex justify-center animate-fade-down animate-once animate-duration-1000 animate-delay-100 animate-ease-in-out">
               <div className="rounded-xl">
                 {file !== null && hasResult === null && (
                   <Image
@@ -134,6 +134,12 @@ const SingleFileUploader = ({ side, isActive }: SingleFileUploaderProps) => {
 
               </div>
             </section>
+          )}
+
+          {jsonResult && hasResult === null && (
+            <div className="w-full h-full flex flex-col justify-end items-center font-semibold">
+              <p className="">No damage detected</p>
+            </div>
           )}
         </div>
       ) : (

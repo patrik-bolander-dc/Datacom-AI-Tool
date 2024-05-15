@@ -2,11 +2,11 @@ import { capitalize, cn, roundDp } from "@/lib/utils";
 import { CarPartColorMap, ListOfCarPartsProps } from "@/types";
 
 export const carPartColorMap: CarPartColorMap = {
-  'scratch': 'bg-orange-500',
+  'scratch': 'bg-gray-500',
   'glass shatter': 'bg-red-500',
   'tire flat': 'bg-green-500',
   'dent': 'bg-blue-500',
-  'crack': 'bg-gray-500',
+  'crack': 'bg-orange-500',
   'lamp broken': 'bg-purple-500',
 };
 
