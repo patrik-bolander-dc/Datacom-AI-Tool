@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import Image from 'next/image'
 import { Camera } from 'lucide-react';
 import { capitalize, dataURLtoFile} from "@/lib/utils";
-import { CameraType } from "@/types";
+import { CameraType, SideMapToJsonResult } from "@/types";
 
 import WebCamera from "./web-camera";
 import { useAtom } from "jotai";
@@ -18,8 +18,10 @@ import {
   RightFile,
   RightImageResult,
   WhichCameraIsActive,
-  UploadError
+  UploadError,
+  JsonResult
 } from '@/components/Atoms/FileAtoms';
+import ImageWithDetailedView from "./image-with-detailed-view";
 
 
 interface SingleFileUploaderProps {
@@ -57,6 +59,8 @@ const SingleFileUploader = ({ side }: SingleFileUploaderProps) => {
   const [whichCameraIsActive, setWhichCameraIsActive] = useAtom(WhichCameraIsActive);
   const [capturedImage, setCapturedImage] = useState(null);
 
+  const [jsonResult] = useAtom(JsonResult);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
     // if (imgResult) {
@@ -70,7 +74,7 @@ const SingleFileUploader = ({ side }: SingleFileUploaderProps) => {
 
   const RedirectToCamera = () => {
     setIsCameraActive(true);
-    setWhichCameraIsActive(side);
+    setWhichCameraIsActive(side); // TODO
   }
 
   useEffect(() => {
@@ -91,17 +95,18 @@ const SingleFileUploader = ({ side }: SingleFileUploaderProps) => {
   return (
     <div className="w-full">
       {!isCameraActive ? (
-        <div className="w-full flex flex-col bg-gray-200 p-5 rounded-xl max-w-2xl min-w-20 dark:bg-gray-900 h-full">
+        <div className="w-full flex flex-col bg-gray-200 p-3 rounded-lg max-w-2xl min-w-20 dark:bg-gray-900 h-full">
           <h1 className="w-full text-center font-semibold text-2xl">{capitalize(side)}</h1>
 
           <div className="flex w-full justify-between gap-4 md:block mt-2">
-            <input type="file"
+            {(!jsonResult) && (<input type="file"
               placeholder="Upload File"
               onChange={handleFileChange}
               className='bg-blue-50 dark:bg-dcBlue rounded-xl border border-blue-500 text-lg h-full
           dark:file:bg-blue-500 dark:file:text-black file:border-0 file:p-3 file:px-4 file:rounded-l file:h-full file:font-semibold file:text-lg file:mr-5 file:hover:cursor-pointer
           file:bg-white file:text-black w-full'
-            />
+            />)}
+
             {/* Mobile phone Camera button */}
             {!hasResult && (
               <button onClick={RedirectToCamera} className=" bg-gray-800 dark:bg-gray-300 rounded-lg md:hidden px-4">
@@ -110,9 +115,8 @@ const SingleFileUploader = ({ side }: SingleFileUploaderProps) => {
             )}
           </div>
 
-
           {(file !== null) && (
-            <section className="w-full pt-5 flex justify-between animate-fade-down animate-once animate-duration-1000 animate-delay-100 animate-ease-in-out">
+            <section className="w-full pt-5 flex justify-center animate-fade-down animate-once animate-duration-1000 animate-delay-100 animate-ease-in-out">
               <div className="rounded-xl">
                 {file !== null && hasResult === null && (
                   <Image
@@ -124,13 +128,7 @@ const SingleFileUploader = ({ side }: SingleFileUploaderProps) => {
                   />
                 )}
                 {hasResult !== null && (
-                  <Image
-                    src={hasResult as string}
-                    width={150}
-                    height={150}
-                    alt="Thumbnail preview of uploaded image"
-                    className="rounded-lg h-auto"
-                  />
+                  <ImageWithDetailedView imageUrl={hasResult} side={side} arrayOfDamage={jsonResult[SideMapToJsonResult[side]]} />
                 )}
 
               </div>
@@ -140,11 +138,10 @@ const SingleFileUploader = ({ side }: SingleFileUploaderProps) => {
       ) : (
         <WebCamera setCameraToActive={setIsCameraActive} setCapturedImage={setCapturedImage} />
       )}
-
-
-
     </div >
   );
 };
 
 export default SingleFileUploader;
+
+// <ImageWithDetailedView imageUrl={hasResult} side={side} arrayOfDamage={jsonResult[SideMapToJsonResult[side]]} />

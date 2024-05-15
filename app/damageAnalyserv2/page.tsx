@@ -25,7 +25,6 @@ import { Input } from '@/components/ui/input';
 import CarPartTick from '@/components/multiple-file-upload/car-part-tick';
 import { MOCK_VehicleData } from '@/lib/data';
 
-
 function MulitpleDamageAnalyser() {
 
   const labelAcceptedFileType = "png, jpeg";
@@ -131,7 +130,6 @@ function MulitpleDamageAnalyser() {
 
     // Calling and retieving analyzed images of damaged sides
     tempEffectedCarParts.forEach((side: carSide) => {
-      console.log('side', side)
       const file =  FileMap[side]
       analyseVehicleImage(file, side);
     })
@@ -186,8 +184,6 @@ function MulitpleDamageAnalyser() {
       if (result.ok) {
         const imageBlob = await result.blob();
         const imageObjectURL = URL.createObjectURL(imageBlob);
-        console.log('imageUrl', imageObjectURL)
-        console.log('side', side)
 
         if (side === carSide.FRONT) {
           setFrontImageResult(imageObjectURL)
@@ -214,6 +210,7 @@ function MulitpleDamageAnalyser() {
   };
 
   return (
+    
     <div className='w-full mt-5 px-5 flex flex-col gap-5'>
       <div className="flex flex-col lg:flex-row gap-5">
         <SingleFileUploader side='front' />

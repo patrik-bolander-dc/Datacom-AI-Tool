@@ -9,7 +9,7 @@ export const carPartColorMap = {
 
 const ListOfCarParts = ({arrayOfParts, title}: any) => {
 
-  if (arrayOfParts.length === 0) {
+  if (!arrayOfParts || arrayOfParts.length === 0 ) {
     return <></>
   }
 
