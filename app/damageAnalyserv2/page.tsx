@@ -176,7 +176,7 @@ function MulitpleDamageAnalyser() {
         body: formData
       });
 
-      // DEV ONLY - Temporarily disabling the fetch call for dev work
+      // DEV ONLY - Temporarily disabling the fetch call for dev work (TODO 2)
       // const myBlob = new Blob();
       // const myOptions = { status: 200, statusText: "its all good!" };
       // const result = new Response(myBlob, myOptions);
@@ -298,8 +298,8 @@ function MulitpleDamageAnalyser() {
 export default MulitpleDamageAnalyser
 
 // --------------- TODO --------------- 
-// - refine UI on this main page
-// - mock analyseVehicleImage API call to return a mocked image of a labelled image
-// - refine WebCamera component: stretched images and only 1 webCamera component displayed at a time
-// - find any bugs u want lol glhf
+// 1) refine UI on this main page
+// 2) mock analyseVehicleImage API call to return a mocked image of a labelled image
+// 3) refine WebCamera component: stretched images and only 1 webCamera component displayed at a time
+// 4) find any bugs u want lol glhf
 // -----------------------------------

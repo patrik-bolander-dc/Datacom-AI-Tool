@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import Image from 'next/image'
 
+// TODO 3
 const WebCamera = ({setCameraToActive, setCapturedImage}) => {
     const webcamRef = useRef(null);
     const [img, setImg] = useState(null);
