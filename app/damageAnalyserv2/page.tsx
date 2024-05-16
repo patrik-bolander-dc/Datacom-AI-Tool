@@ -164,6 +164,7 @@ function MulitpleDamageAnalyser() {
     resetAllAtoms()
   }, [])
 
+  // Fetching the analyzed image from the backend
   const analyseVehicleImage = async (file: File, side: carSide) => {
 
     const formData = new FormData();
@@ -295,3 +296,10 @@ function MulitpleDamageAnalyser() {
 }
 
 export default MulitpleDamageAnalyser
+
+// --------------- TODO --------------- 
+// - refine UI on this main page
+// - mock analyseVehicleImage API call to return a mocked image of a labelled image
+// - refine WebCamera component: stretched images and only 1 webCamera component displayed at a time
+// - find any bugs u want lol glhf
+// -----------------------------------

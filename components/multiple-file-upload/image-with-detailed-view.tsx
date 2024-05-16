@@ -11,7 +11,6 @@ import { Info } from 'lucide-react';
 import { ScrollArea } from "@/components/ui/scroll-area"
 import Image from 'next/image'
 import ListOfCarParts from "./list-of-parts"
-import { capitalize } from "@/lib/utils"
 
 interface ImageWithDetailedViewProps {
   imageUrl: any;
@@ -25,16 +24,16 @@ const ImageWithDetailedView = ({ imageUrl, side, arrayOfDamage }: ImageWithDetai
     <Dialog>
       <DialogTrigger asChild>
         <div className="hover:cursor-pointer hover:scale-105 transition-transform duration-300 ease-in-out">
-        <Image
-          src={imageUrl}
-          width={250}
-          height={250}
-          alt="Thumbnail preview of uploaded image"
-          className="rounded-lg h-auto border border-red-500 "
-        />
-        <div className="flex justify-end -mt-7 mr-2">
-          <Info className="text-black z-30" />
-        </div>
+          <Image
+            src={imageUrl}
+            width={250}
+            height={250}
+            alt="Thumbnail preview of uploaded image"
+            className="rounded-lg h-auto border border-red-500 "
+          />
+          <div className="flex justify-end -mt-7 mr-2">
+            <Info className="text-white z-30" />
+          </div>
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-2xl max-h-[calc(100vh-100px)] overflow-auto">
